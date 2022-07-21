@@ -1,0 +1,511 @@
+---
+title: "week11_hw"
+output: html_document
+date: '2022-05-22'
+---
+
+```{r setup, include=FALSE}
+library(arules)
+library(ggplot2)
+library(arulesViz)
+library(shinythemes)
+library(pmml)
+library(caret)
+library(rpart)
+library(dplyr)
+library(rattle)
+```
+
+## 데이터 확인
+
+데이터출처: https://mdis.kostat.go.kr/index.do
+설명 : [기억.집중.가능.여부	,자기개발.가능여부	,생활수준.변화	인간관계	,기부경험	,계층의식	,소득.만족도	교육정도,	혼인상태] 를 바탕으로 본인의 삶에 대한 만족도를 예측하는 데이터
+
+36423 개의 열과 9개의 예측변수로 구성되어 있음
+
+
+
+```{r cars}
+social = read.csv("social.csv")
+head(social)
+summary(social)
+social <- na.omit(social)
+summary(social)
+head(social)
+dim(social)
+```
+
+## 데이터 트랜젝션
+
+rules 분석을 하기위한 트랜젝션 실행
+
+```{r pressure, echo=FALSE}
+social_transaction <- as(social, "transactions")
+#social_transaction
+
+summary(social_transaction)
+#inspect(social_transaction)
+
+
+
+#class(social_transaction) 
+```
+
+가장 빈도가 높은 항목을 분석
+
+```{r}
+# itemFrequencyPlot(social_transaction, 
+#                   topN=10, 
+#                   type="absolute", 
+#                   main="Item Frequency") 
+```
+
+transaction 데이터를 바탕으로 rules 생성해보기
+#매개변수	  의미	                        디폴트
+#support	  규칙의 최소 지지도(발생 비율)	  0.1
+#confidence	규칙의 최소 신뢰도	            0.8
+#minlen	    규칙에 포함되는 최소 물품 수	   1
+#maxlen	    규칙에 포함되는 최대 물품 수	   10
+#smax	      규칙의 최대 지지도	             1
+
+
+```{r}
+rules <- apriori (social_transaction, 
+                  parameter = list(supp = 0.1, 
+                                   conf = 0.8)) 
+
+#confidence 기준
+rules_conf <- sort (rules, by="confidence", decreasing=TRUE) 
+
+
+inspect(head(rules_conf)) 
+
+# lift기준
+
+rules_lift <- sort (rules, by="lift", decreasing=TRUE) 
+
+
+inspect(head(rules_lift)) 
+```
+
+
+
+
+
+```{r}
+length(rules)
+
+subsetRules <- which(rowSums(is.subset(rules, rules, proper = T)) > 1) 
+
+length(subsetRules)  
+#  
+rules <- rules[-subsetRules] 
+
+length(rules)
+```
+
+
+
+lhs가 만족감일때 분석(어떤 rhs(?)를 가진 사람은 만족감(lhs)가 [만족, 보통, 불만족] 일까?)
+
+결과:
+
+만족 : confidence를 기준으로 할때 자기개발 여부와 기억 집중 가능 여부가 rhs로 나왔고 두개다 가능 이었다. lift를 기준으로 하였을때는 소득, 인간관계, 교육등이 나왔고 3가지 수준이 높음으로 나온다
+
+보통: confidence를 기중으로 할때 자기개발 여부와 기억 집중 가능 여부가 rhs로 나왔고 두개다 가능 이었다. lift를 기준으로 하였을때는 소득, 인간관계, 교육등이 나왔고 3가지 수준이 보통으로 나온다
+
+불만족: confidence를 기중으로 할때 자기개발 여부와 기억 집중 가능 여부가 rhs로 나왔고 두개다 가능 이었다. lift를 기준으로 하였을때는 소득, 인간관계, 교육등이 나왔고 3가지 수준이 대체로 불만족으로 나온다
+
+
+결과 고찰:
+신뢰도를 기준으로 하였을때는 만족감이 거의 차이가 없지만 향상도를 기준으로 하였을때는 소득, 인간관계, 교육의 변화에 따라 lhs 만족감이 확연히 바뀌는 것을 알 수 있다.
+
+```{r}
+rules_r1 <- apriori (data=social_transaction, 
+                    parameter=list (supp=0.05,
+                                    conf = 0.3
+                    ),
+                    appearance = list (default="rhs",
+                                       lhs="만족감=만족")) 
+#control = list (verbose=F)) 
+
+rules_conf_r1 <- sort (rules_r1, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_r1,5))
+
+
+rules_conf_r1 <- sort (rules_r1, by="lift", decreasing=TRUE) 
+inspect(head(rules_conf_r1,5))
+
+rules_r2 <- apriori (data=social_transaction, 
+                    parameter=list (supp=0.05,
+                                    conf = 0.3
+                    ),
+                    appearance = list (default="rhs",
+                                       lhs="만족감=보통")) 
+#control = list (verbose=F)) 
+
+rules_conf_r2 <- sort (rules_r2, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_r2,5))
+
+
+rules_conf_r2 <- sort (rules_r2, by="lift", decreasing=TRUE) 
+inspect(head(rules_conf_r2,5))
+
+rules_r3 <- apriori (data=social_transaction, 
+                    parameter=list (supp=0.05,
+                                    conf = 0.3
+                    ),
+                    appearance = list (default="rhs",
+                                       lhs="만족감=불만족")) 
+#control = list (verbose=F)) 
+
+rules_conf_r3 <- sort (rules_r3, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_r3,5))
+
+
+rules_conf_r3 <- sort (rules_r3, by="lift", decreasing=TRUE) 
+inspect(head(rules_conf_r3,5))
+
+```
+
+# rhs 가 만족감일때(현재 삶에 만족하는 사람은(rhs) 어떤 lhs를 가질까?)
+
+
+결과 :
+향상도 순서와 신뢰도 순서에 차이가 없다
+
+만족: 상위 5개 모두 '인간관계=만족' 이 포함되어있으며 계층의식은 중산층이어도 rhs가 만족인 경우가 많고 이외 변수들은 다 가능 혹은 좋음인경우 rhs가 만족이다
+
+보통: 대체로 자기개발과 기억집중이 가능하고 나머지 수준이 보통인 경우 rhs가 보통인경우가 많다. 이례적으로 기부경험이 없는경우 rhs가 보통인 경우가 있다
+
+불만족: 자기개발, 기억집중이 가능하고 나머지 수준이 불만족인 경우 rhs가 보통인 경우가 많다. 대체로 기부 경험이 없다.
+
+
+```{r}
+
+
+rules_1 <- apriori (data=social_transaction, 
+                  parameter=list (supp=0.05,
+                                  conf = 0.3
+                                  ),
+                  appearance = list (default="lhs",
+                                     rhs="만족감=만족")) 
+                  #control = list (verbose=F)) 
+
+rules_conf_1 <- sort (rules_1, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_1,5))
+write(rules_1, file = "data1.csv", sep = ",", col.names = NA)
+
+rules_conf_1 <- sort (rules_1, by="lift", decreasing=TRUE) 
+inspect(head(rules_conf_1,5))
+write(rules_1, file = "data2.csv", sep = ",", col.names = NA)
+# lift순서와 confidence 순서가 같음
+
+rules_2 <- apriori (data=social_transaction, 
+                  parameter=list (supp=0.05,
+                                  conf = 0.3
+                  ),
+                  appearance = list (default="lhs",
+                                     rhs="만족감=보통")) 
+#control = list (verbose=F)) 
+
+rules_conf_2 <- sort (rules_2, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_2,10))
+write(rules, file = "data3.csv", sep = ",", col.names = NA)
+
+rules_conf_2 <- sort (rules_2, by="lift", decreasing=TRUE) 
+inspect(head(rules_conf_2,10))
+write(rules_2, file = "data4.csv", sep = ",", col.names = NA)
+# 만족감이 보통인 경우는 lift를 기준으로 하였을 때 교육정도가 중요함을 알수 있음
+
+rules_3 <- apriori (data=social_transaction, 
+                  parameter=list (supp=0.05,
+                                  conf = 0.3
+                  ),
+                  appearance = list (default="lhs",
+                                     rhs="만족감=불만족")) 
+#control = list (verbose=F)) 
+
+rules_conf_3 <- sort (rules_3, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_3,5))
+write(rules_3, file = "data5.csv", sep = ",", col.names = NA)
+
+rules_conf_3 <- sort (rules_3, by="lift", decreasing=TRUE) 
+inspect(head(rules_conf_3,5))
+write(rules_3, file = "data6.csv", sep = ",", col.names = NA)
+#만족감 불만족의 경우 confidence와  lift가 차이가 없음
+```
+
+##트리데이터를 만들어서 rules를 통해 파악한 결과와 비교하기
+
+
+data.frame의 형식으로 트리데이터 만들기
+
+
+```{r}
+tree_data <- data.frame(만족감 = social$만족감,
+                           기억.집중.가능.여부
+                           = social$기억.집중.가능.여부,
+                           자기개발.가능여부
+                           = social$자기개발.가능여부,
+                           생활수준.변화
+                           = social$생활수준.변화,
+                           인간관계
+                           = social$인간관계,
+                           기부경험
+                           = social$기부경험,
+                           계층의식
+                           = social$계층의식,
+                           소득.만족도
+                           = social$소득.만족도,
+                           교육정도
+                           = social$교육정도,
+                           혼인상태
+                           = social$혼인상태)
+summary(tree_data)
+head(tree_data)
+                           
+```
+
+
+
+
+트리를 만드는 함수 선언 
+정확도 표시
+
+
+```{r}
+make_tree <- function(data, cp_ = -1, ...){
+  indexes = createDataPartition(tree_data$만족감, p = 0.6, list = FALSE)
+  train = data[indexes, ]
+  test = data[-indexes, ]
+  fit <- rpart(만족감~.,
+               data = train,
+               cp = cp_, method = "class", ...)
+  pred = predict(fit, test, type = "class", )
+  tmp <- data.frame(test, pred)
+  acc <- sum(tmp$만족감 == tmp$pred) / nrow(tmp)
+  #print(confusionMatrix(test$NObeyesdad, pred, positive = '4'))
+  print(acc * 100)
+  return(fit)
+}
+```
+
+트리만들기
+
+파라미터는 minsplit = 5, minbucket = 3, maxdepth = 15, cp_ = 0.002로 설정
+
+```{r}
+tree<-make_tree(tree_data, minsplit = 5, minbucket = 3, maxdepth = 15, cp_ = 0.002)
+#pdf("tree.pdf")
+#fancyRpartPlot(tree)
+#dev.off()
+```
+
+plot 으로 확인
+
+```{r}
+
+windows()
+
+fancyRpartPlot(tree)
+#dev.off()
+```
+
+
+결과 고찰
+
+트리를 분할한 예측 변수로는 인간관계, 계층의식, 소득, 생활수준 변화, 기부경험이 있다
+
+'만족감= 만족' 을 기준으로 볼때, 인간관계가 만족하면서 계층의식이 상류층 혹은 중산층인 경우 삶에 만족하며 또는 인간관계는 보통이더라도 계층의식이 높으며 소득수준에 만족하고 기부경험이 있을때, 삶에 만족한다.
+
+즉, 삶에 만족하는 데 가장 중요한 것은 소득 수준과 인간관계라고 할수 있다.
+
+'만족감 =보통' 을 기준으로 볼때, 인간관계가 만족하면서 계층의식이 낮은 경우/ 인간관계는 보통이지만 소득에 만족하는 경우/ 인간관계가 보통이며,계층 의식은 낮지만, 생활수준의 변화가 있는 경우 삶을 보통수준이라고 생각한다
+
+'만족감 =보통'에서 생각해볼점은 '기부 경험'과 '인간관계'인데 소득수준이 높더라도 인간관계가 만족스럽지 않으면 삶에 불만족하는 경우가 많으며, 기부 경험이 있으면 삶에 만족하는 경우가 있다.
+따라서 소득 수준이 높더라도 인간관계가 좋지 않으면 삶에 불만족함을 알 수 있다.
+기부경험에 관하여는 다각도에서 생각해 볼 필요가 있다.
+
+
+'만족감 = 불만족'을 기준으로 볼때, 인간관계가 보통혹은 나쁘거나 생활수준의 변화가 안좋아진 경우 삶에 불만족한다.
+
+즉 인간관계와 소득 수준이 둘다 낮으면 삶에 불만족하지만 만약 소득수준에 개선될 여지가 있으면 삶에 만족하는 경우도 있다.
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+
+변수의 독립성 확인
+
+트리데이터와 rules를 통해 보았을때, 전체적인 소득수준과 인간관계가 삶의 만족도를 결정하는 주요 변수 처럼 보임
+따라서 계층의식과 인간관계를 선정하여 독립성을 확인인
+
+
+
+
+상류층의 경우 인간관계 만족감이 높으나 빈곤층일지라도 불만족 보다는 보통이 더 많음
+인간관계의 경우 선형관계가 성립하는데 인간관계의 만족도가 높을수록 삶의 만족도도 비례적으로 높음
+```{r}
+table(social$계층의식,social$만족감)
+table(social$인간관계,social$만족감)
+```
+
+
+
+독립성 테스트 결과 
+h0(귀무 가설): 게층의식, 인간관계는 만족감과 연관이 없다
+h1(연구 가설): 게층의식, 인간관계는 만족감과 연관이 있다
+둘의 p-value가 2.2e-16 임으로 귀무가설을 기각 즉, 계층의식과 인간관계는 만족감과 연관이 있으며, 종속적이다.
+
+
+```{r}
+chisq.test(social$계층의식,social$만족감)
+chisq.test(social$인간관계,social$만족감)
+```
+
+
+
+
+#트리데이터의 결과와 rulse 비교
+
+'만족감 = 만족'의 경우 tree데이터와 rules의 상위 결과가 거의 일치한다
+
+인간관게=만족, 소득수준=중산층 이상
+
+다만 트리데이터에서는 혼인 상태에 관한 결과는 없었지만 rules를 통해서 보았을때, 
+신뢰도와 향상도 기준모두 혼인상태가 기혼인 경우 삶에대한 만족감이 만족인 경우 가 더 많음을 나타낸다
+
+
+```{r}
+rules_conf_1 <- sort (rules_1, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_1,5))
+rules_conf_1 <- sort (rules_1, by="lift", decreasing=TRUE) 
+inspect(head(rules_conf_1,5))
+fancyRpartPlot(tree)
+```
+
+'만족감=보통' 인경우 역시 트리데이터와 비슷하다
+
+인간관계와 소득수준이 보통인 경우 주로 삶에 만족수준이 보통임을 알 수 있다.
+rules를 통해서 기부경험이 없을 수록 삶의 만족도가 보통임을 알수 있다.
+
+
+
+```{r}
+rules_conf_2 <- sort (rules_2, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_2,5))
+
+
+rules_conf_2 <- sort (rules_2, by="lift", decreasing=TRUE) 
+inspect(head(rules_conf_2,5))
+fancyRpartPlot(tree)
+
+
+```
+
+'만족도 = 불만족'의 경우 트리데이터와 비교하면 
+rules를 통해 전체적인 소득 수준이 낮을때, 삶에 불만족함을 알수 있다.
+
+
+
+```{r}
+rules_conf_3 <- sort (rules_3, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_3,5))
+
+
+rules_conf_3 <- sort (rules_3, by="lift", decreasing=TRUE) 
+inspect(head(rules_conf_3,5))
+```
+
+
+#기부경험에 따른 차이를 확인해보기위해 신뢰도 기준으로 각각 조사
+- 만족과 보통을 나누는 차이를 구분해보고자
+
+기부경험과 교육정도가 연관도가 높은것을 알 수 있음
+
+
+```{r}
+rules_d <- apriori (data=social_transaction, 
+                    parameter=list (supp=0.05,
+                                    conf = 0.3
+                    ),
+                    appearance = list (default="lhs",
+                                       rhs="기부경험=있음")) 
+#control = list (verbose=F)) 
+
+rules_conf_d <- sort (rules_d, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_d,5))
+
+rules_dx <- apriori (data=social_transaction, 
+                    parameter=list (supp=0.05,
+                                    conf = 0.3
+                    ),
+                    appearance = list (default="lhs",
+                                       rhs="기부경험=없음")) 
+#control = list (verbose=F)) 
+
+rules_conf_dx <- sort (rules_dx, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_dx,5))
+
+
+```
+
+# 교육수준에 따른 rules조사
+- 교육수준이 인간관계나 소득수준에 영향을 미치는 지 측정하기위해 조사
+
+교육수준이 4년제인 경우 경제적으로는 중산층일지라도 기부경험이 높으며 만족감이 높음
+교육수준이 초등학교인 경우 소득 수준이 낮으며, 가정환경이 좋지 않음
+
+
+```{r}
+
+
+
+
+
+rules_e <- apriori (data=social_transaction, 
+                    parameter=list (supp=0.05,
+                                    conf = 0.3
+                    ),
+                    appearance = list (default="lhs",
+                                       rhs="교육정도=4년제")) 
+#control = list (verbose=F)) 
+
+rules_conf_e <- sort (rules_e, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_e,5))
+
+rules_ex <- apriori (data=social_transaction, 
+                    parameter=list (supp=0.01,
+                                    conf = 0.2
+                    ),
+                    appearance = list (default="lhs",
+                                       rhs="교육정도=초등학교")) 
+#control = list (verbose=F)) 
+
+rules_conf_ex <- sort (rules_ex, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf_ex,5))
+```
+
+
+
+
+최종 고찰
+
+
+삶의 만족도를 결정짓는 가장 중요한 요인은 인간관계와 전체적인 소득수준이며, 
+삶에 만족과 보통을 결정지을때는 소득수준보다 인간관게가 더 중요하다
+삶에 보통과 만족을 결정 지을때는 인간관계보다는 소득수준이 더 중요하다
+
+자기개발 가능여부와, 기억집중 가능 여부는 rules 로 통해서 확인해 보았을때, 삶의 만족도와 관련이 없다는 것을 알 수 있다.
+결과론 적으로 보았을때, 기부경험은 교육수준과 연관이 있으며, 이 교육수준은 가정환경, 소득 만족도 등에 영향을 주어 다양하게 영향을 미치나 이것이 꼭 삶의 만족과 불만족을 결정하는 요인이라고는 보기 어렵다
+
+
+
+
+
+
+
+
+

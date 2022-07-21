@@ -1,0 +1,909 @@
+---
+title: "neural_svm_tree"
+author: "빈정수"
+date: '2022-04-24'
+output: html_document
+---
+
+```{r setup,include=FALSE}
+library(dplyr)
+library(tidyverse)
+library(rpart)
+library(caret)
+library(RColorBrewer)
+library(rattle)
+library(party)
+library(rpart.plot)
+library(partykit)
+library(hardhat)
+library(naivebayes)
+library(caretEnsemble)
+library(psych)
+library(Amelia)
+library(mice)
+library(GGally)
+library(randomForest)
+library(e1071)
+library(klaR)
+library(neuralnet)
+library(nnet)
+library(ROCR)
+library(devtools)
+source_url('https://gist.githubusercontent.com/Peque/41a9e20d6687f2f3108d/raw/85e14f3a292e126f1454864427e3a189c2fe33f3/nnet_plot_update.r')
+library(NeuralNetTools)
+library(kernlab)
+```
+
+```{r preprocess}
+# 시드설정
+set.seed(25)
+
+#경로 강제로 상대경로로 변환하는 함수
+set_file_directory <- function(){
+  source = rstudioapi::getSourceEditorContext()$path
+  source = head(unlist(strsplit(source, split = "/")),-1)
+  source = paste(source, collapse="/")
+  setwd(source)
+}
+set_file_directory()
+
+# 데이터 불러오기
+heart <- read.csv("./hcvdat0.csv", header = T)
+
+# 데이터 전처리 : factor형으로 변경할거 변경
+
+heart$Category = as.factor(heart$Category)
+heart$Sex = as.factor(heart$Sex)
+
+
+## Category -> CategoryF 헌혈 가능자 불가능자로 재분류
+heart$CategoryF <- factor(615, levels = c("Donor", "No"))
+heart$CategoryF[heart$Category %in% "0=Blood Donor" | heart$Category %in% "0s=suspect Blood Donor"] <- "Donor"
+heart$CategoryF[heart$Category %in% "1=Hepatitis" | heart$Category %in% "2=Fibrosis" | heart$Category %in% "3=Cirrhosis"] <- "No"
+
+# 미가공 데이터셋 남기기
+rawheart = heart
+
+drop <- c("X","Category")
+rawheart = rawheart[,!(names(rawheart) %in% drop)]
+
+## Ann과 Svm을 위해 실행가능하도록 가공
+forAnnSvm = rawheart
+
+forAnnSvm$ALB[is.na(forAnnSvm$ALB)] <- median(forAnnSvm$ALB, na.rm = T)
+forAnnSvm$ALP[is.na(forAnnSvm$ALP)] <- median(forAnnSvm$ALP, na.rm = T)
+forAnnSvm$ALT[is.na(forAnnSvm$ALT)] <- median(forAnnSvm$ALT, na.rm = T)
+forAnnSvm$AST[is.na(forAnnSvm$AST)] <- median(forAnnSvm$AST, na.rm = T)
+forAnnSvm$BIL[is.na(forAnnSvm$BIL)] <- median(forAnnSvm$BIL, na.rm = T)
+forAnnSvm$CHE[is.na(forAnnSvm$CHE)] <- median(forAnnSvm$CHE, na.rm = T)
+forAnnSvm$CHOL[is.na(forAnnSvm$CHOL)] <- median(forAnnSvm$CHOL, na.rm = T)
+forAnnSvm$CREA[is.na(forAnnSvm$CREA)] <- median(forAnnSvm$CREA, na.rm = T)
+forAnnSvm$GGT[is.na(forAnnSvm$GGT)] <- median(forAnnSvm$GGT, na.rm = T)
+forAnnSvm$PROT[is.na(forAnnSvm$PROT)] <- median(forAnnSvm$PROT, na.rm = T)
+
+## Sex -> SexF 1남자 0여자로 바꿈
+forAnnSvm$MaleF <- factor(615, levels = c(1, 0))
+forAnnSvm$MaleF[heart$Sex %in% "m" ] <- 1 
+forAnnSvm$MaleF[heart$Sex %in% "f" ] <- 0
+
+forAnnSvm$FemaleF <- factor(615, levels = c(1, 0))
+forAnnSvm$FemaleF[heart$Sex %in% "m" ] <- 0 
+forAnnSvm$FemaleF[heart$Sex %in% "f" ] <- 1
+
+drop <- c("Sex")
+forAnnSvm = forAnnSvm[,!(names(forAnnSvm) %in% drop)]
+
+
+## GGT -> GGTF GGT를 정상범위에 맞추어 factor화
+##https://www.amc.seoul.kr/asan/healthinfo/management/managementDetail.do?managementId=36
+heart$GGTF <- factor(615, levels = c("normal", "abnormal"))
+heart$GGTF[((heart$GGT >= 10 & heart$GGT <= 71) & heart$Sex %in% "m") | ((heart$GGT >= 6 & heart$GGT <= 42) & heart$Sex %in% "f")] <- "normal" 
+heart$GGTF[((heart$GGT < 10 | heart$GGT > 71) & heart$Sex %in% "m") | ((heart$GGT < 6 | heart$GGT > 42) & heart$Sex %in% "f")] <- "abnormal"
+
+## ALT -> ALTF ALT 정상범위에 맞추어 factor화
+## https://www.amc.seoul.kr/asan/healthinfo/management/managementDetail.do?managementId=36
+heart$ALTF <- factor(615, levels = c("normal", "abnormal"))
+heart$ALTF[heart$ALT <= 40] <- "normal"
+heart$ALTF[heart$ALT > 40] <- "abnormal" 
+
+## AST -> ASTF AST 정상범위에 맞추어 factor화
+## https://www.amc.seoul.kr/asan/healthinfo/management/managementDetail.do?managementId=36
+heart$ASTF <- factor(615, levels = c("normal", "abnormal"))
+heart$ASTF[heart$AST <= 40] <- "normal"
+heart$ASTF[heart$AST > 40] <- "abnormal" 
+
+## CHOL -> CHOLF CHOL 정상범위에 맞추어 
+## https://www.webmd.com/cholesterol-management/cholesterol-tests-understand-your-results
+## HDL 농도로 판단.
+heart$CHOLF <- factor(615, levels = c("normal", "abnormal"))
+heart$CHOLF[(heart$CHOL <= 4 & heart$Sex %in% "m") | (heart$CHOL <= 5 & heart$Sex %in% "f")] <- "abnormal"
+heart$CHOLF[(heart$CHOL > 4 & heart$Sex %in% "m") | (heart$CHOL > 5 & heart$Sex %in% "f")] <- "normal" 
+
+## CREA -> CREAF CREA 정상범위에 맞추어 
+##https://www.mountsinai.org/health-library/tests/creatinine-blood-test#:~:text=Normal%20Results,less%20muscle%20mass%20than%20men.
+heart$CREAF <- factor(615, levels = c("normal", "abnormal"))
+heart$CREAF[((heart$CREA >= 61.9 & heart$CREA <= 114.9) & heart$Sex %in% "m") | ((heart$CREA >= 53 & heart$CREA <= 97.2) & heart$Sex %in% "f")] <- "normal" 
+heart$CREAF[((heart$CREA < 61.9 | heart$CREA > 114.9) & heart$Sex %in% "m") | ((heart$CREA < 53 | heart$CREA > 97.2) & heart$Sex %in% "f")] <- "abnormal"
+
+## CHE -> CHEF CHE 정상범위에 맞추어
+## https://www.ucsfhealth.org/medical-tests/cholinesterase---blood#:~:text=Normal%20Results,vary%20slightly%20among%20different%20laboratories.
+heart$CHEF<- factor(615, levels = c("normal", "abnormal"))
+heart$CHEF[heart$CHE >= 8 & heart$CHE <= 18] <- "normal"
+heart$CHEF[heart$CHE < 8 | heart$CHE > 18] <- "abnormal" 
+
+## ALB -> ALBF ALB 정상범위에 맞추어 factor화
+## https://www.amc.seoul.kr/asan/healthinfo/management/managementDetail.do?managementId=36
+heart$ALBF<- factor(615, levels = c("normal", "abnormal"))
+heart$ALBF[heart$ALB >= 35 & heart$ALB <= 52] <- "normal"
+heart$ALBF[heart$ALB < 35 | heart$ALB > 52] <- "abnormal" 
+
+## ALP -> ALPF ALP 정상범위에 맞추어 factor화
+## https://www.amc.seoul.kr/asan/healthinfo/management/managementDetail.do?managementId=36
+heart$ALPF<- factor(615, levels = c("normal", "abnormal"))
+heart$ALPF[heart$ALP >= 40 & heart$ALP <= 120] <- "normal"
+heart$ALPF[heart$ALP < 40 | heart$ALP > 120] <- "abnormal" 
+
+## PROT -> PROTF PROT 정상범위에 맞추어 factor화
+## https://www.amc.seoul.kr/asan/healthinfo/management/managementDetail.do?managementId=36
+heart$PROTF<- factor(615, levels = c("normal", "abnormal"))
+heart$PROTF[heart$PROT >= 66 & heart$PROT <= 87] <- "normal"
+heart$PROTF[heart$PROT < 66 | heart$PROT > 87] <- "abnormal" 
+
+## BIL -> BILF BIL 정상범위에 맞추어 factor화
+## https://www.amc.seoul.kr/asan/healthinfo/management/managementDetail.do?managementId=36
+heart$BILF<- factor(615, levels = c("normal", "abnormal"))
+heart$BILF[heart$BIL >= 1 & heart$BIL <= 12] <- "normal"
+heart$BILF[heart$BIL < 1 | heart$BIL > 12] <- "abnormal" 
+
+
+## factor 형변환한 수치형 변수들 드랍
+drop <- c("Category",	"ALB", "ALP",	"ALT",	"AST",	"BIL",	"CHE",	"CHOL",	"CREA",	"GGT", "PROT","X")
+heart = heart[,!(names(heart) %in% drop)]
+
+
+
+
+##heart TRAIN집단,TEST집단 분류
+indexes = createDataPartition(heart$CategoryF, p = .66, list=F)
+train = heart[indexes, ]
+test =  heart[-indexes, ]
+
+##rawheart TRAIN집단,TEST집단 분류
+rawindexes = createDataPartition(rawheart$CategoryF, p = .66, list=F)
+rawtrain = rawheart[rawindexes, ]
+rawtest =  rawheart[-rawindexes, ]
+
+##forAnnSvm TRAIN집단,TEST집단 분류
+findexes = createDataPartition(forAnnSvm$CategoryF, p = .66, list=F)
+ftrain = forAnnSvm[findexes, ]
+ftest =  forAnnSvm[-findexes, ]
+
+```
+
+##트리생성을 위한 사전준비- (가공한데이터셋 - factor화)
+PostPrunning and PrePrunning
+
+```{r fulltree}
+
+##RPART 의사결정나무 적용
+rpart_tree <- rpart(CategoryF~.,
+                    data = train,
+                    cp = -1)
+
+## 성능평가
+result = printcp(rpart_tree)
+
+pred = predict(rpart_tree, test, type = "class",)
+confusionMatrix(as.factor(test$CategoryF), pred)
+
+## 시각화
+windows()
+fancyRpartPlot(rpart_tree)
+readline('Enter to resume ')
+dev.off()
+plotcp(rpart_tree)
+
+##xerror가 최소인 곳에서의 index 추출
+min = 1.1
+index = 0
+cp_ = 0
+for(i in 1:length(result[,1])){
+  if( result[i,4] < min ){
+    min = result[i,4]
+    index = i
+  }
+}
+
+##추출한 index를 기반으로 minsplit 최적해와 cp의 최적해를 도출
+minsplit_ = result[index,2]
+cp_ = result[index,1]
+
+plotcp(rpart_tree)
+
+postvec = c("best_minsplit","best_cp")
+postbest = cbind.data.frame(minsplit_,cp_)
+
+make_tree_r <- function(data, ...){
+  indexes = createDataPartition(data$CategoryF, p = .6, list = F)
+  train = data[indexes, ]
+  test = data[-indexes, ]
+  fit <- rpart(CategoryF~.,
+               data = train,
+               cp = cp_,
+               minsplit = minsplit_,
+               xval = 10,
+               method = "class", ...)
+  pred = predict(fit, test, type = "class", )
+  tmp <- data.frame(test, pred)
+  acc <- sum(tmp$CategoryF == tmp$pred) / nrow(tmp)
+  #print(confusionMatrix(test$HeartDisease, pred, positive = '4'))
+  #print(acc * 100)
+  return(acc*100)
+}
+
+maxdepth_df <- data.frame(
+                         m = double(20),
+                         trainAccuracy = double(20)
+                         )
+
+bestdepth = 0
+maxdepth_ = 0
+# rpart의 인자들을 다르게 해보자
+for(i in 1:20){ #최대 깊이를 1~20
+  ret = make_tree_r(heart, maxdepth = i)
+  maxdepth_df$trainAccuracy[i] = ret
+  maxdepth_df$m[i] = i
+  if(ret > bestdepth){
+    bestdepth = ret
+    maxdepth_ = i
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=trainAccuracy),size=1, color="red", data = maxdepth_df) +
+  labs(title = "LearningCurve\n", x = "maxdepth", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+
+minbucket_df <- data.frame(
+                         m = double(10),
+                         trainAccuracy = double(10)
+                         )
+
+bestbucket = 0
+minbucket_ = 0 #default=minsplit/3
+for(i in 1:10){ # 1~10
+  ret = make_tree_r(heart, minbucket = i)
+  minbucket_df$trainAccuracy[i] = ret
+  minbucket_df$m[i] = i
+  if(ret > bestbucket){
+    minbucket_ = i
+    bestbucket = ret
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=trainAccuracy),size=1, color="red", data = minbucket_df) +
+  labs(title = "LearningCurve\n", x = "minbucket", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+maxsurrogate_df <- data.frame(
+                         m = double(10),
+                         trainAccuracy = double(10)
+                         )
+
+bestmaxsurrogate = 0
+maxsurrogate_ = 5 #default=5
+for(i in 1:10){ # 1~10
+  ret = make_tree_r(heart, maxsurrogate = i)
+  maxsurrogate_df$trainAccuracy[i] = ret
+  maxsurrogate_df$m[i] = i
+  if(ret > bestmaxsurrogate){
+    maxsurrogate_ = i
+    bestmaxsurrogate = ret
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=trainAccuracy),size=1, color="red", data = maxsurrogate_df) +
+  labs(title = "LearningCurve\n", x = "maxsurrogate", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+
+
+
+maxcompete_df <- data.frame(
+                         m = double(10),
+                         trainAccuracy = double(10)
+                         )
+
+bestmaxcompete = 0
+maxcompete_ = 4 #default=4
+for(i in 1:10){ # 1~10
+  ret = make_tree_r(heart, maxcompete = i)
+  maxcompete_df$trainAccuracy[i] = ret
+  maxcompete_df$m[i] = i
+  if(ret > bestmaxcompete){
+    maxcompete_ = i
+    bestmaxcompete = ret
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=trainAccuracy),size=1, color="red", data = maxcompete_df) +
+  labs(title = "LearningCurve\n", x = "maxcompete", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+
+
+
+
+usesurrogate_df <- data.frame(
+                         m = seq(0.1,2,0.1),
+                         trainAccuracy = double(20)
+                         )
+
+
+bestusesurrogate = 0
+usesurrogate_ = 2 #default=2
+for(i in seq(0.1,2,0.1)){ # 0.1~2
+  ret = make_tree_r(heart, usesurrogate = i)
+  usesurrogate_df$trainAccuracy[i*10] = ret
+  if(ret > bestusesurrogate){
+    usesurrogate_ = i
+    bestusesurrogate = ret
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=trainAccuracy),size=1, color="red", data = usesurrogate_df) +
+  labs(title = "LearningCurve\n", x = "usesurrogate", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+
+
+paravec = c("best_maxdepth","best_minbucket","best_maxsurrogate","best_maxcompete","best_usesurrogate","best_minsplit","best_cp")
+bestdf = cbind.data.frame(maxdepth_,minbucket_,maxsurrogate_,maxcompete_,usesurrogate_,minsplit_,cp_)
+
+
+```
+
+##최적해 트리 적용- (가공한데이터셋 - factor화)
+```{R besttree}
+##RPART 의사결정나무 적용
+rpart_tree_best <- rpart(CategoryF~.,
+        data = train,
+        parms = list(split = 'gini'),
+        cp = cp_,
+        minsplit = minsplit_,
+        minbucket = minbucket_,
+        maxdepth = maxdepth_,
+        maxcompete = maxcompete_, 
+        maxsurrogate = maxsurrogate_, 
+        usesurrogate = usesurrogate_, 
+        xval = 10,
+        method = "class")  
+
+## 성능평가
+result = printcp(rpart_tree_best)
+
+pred_best = predict(rpart_tree_best, test, type = "class",)
+
+cf = confusionMatrix(as.factor(test$CategoryF), pred_best)
+
+Accuracy=cf$overall[1]
+Sensitivity=cf$byClass[1]
+Specificity=cf$byClass[2]
+
+df = data.frame(Accuracy,Sensitivity,Specificity)
+print(df)
+
+## 시각화
+windows()
+fancyRpartPlot(rpart_tree_best)
+readline('Enter to resume ')
+dev.off()
+plotcp(rpart_tree_best)
+```
+##트리생성을 위한 사전준비- (미가공 데이터셋)
+PostPrunning and PrePrunning
+
+```{r fulltree2}
+
+##RPART 의사결정나무 적용
+rpart_tree <- rpart(CategoryF~.,
+                    data = rawtrain,
+                    cp = -1)
+
+## 성능평가
+result = printcp(rpart_tree)
+
+pred = predict(rpart_tree, rawtest, type = "class",)
+confusionMatrix(as.factor(rawtest$CategoryF), pred)
+
+## 시각화
+windows()
+fancyRpartPlot(rpart_tree)
+readline('Enter to resume ')
+dev.off()
+plotcp(rpart_tree)
+
+##xerror가 최소인 곳에서의 index 추출
+min = 1.1
+index = 0
+cp_ = 0
+for(i in 1:length(result[,1])){
+  if( result[i,4] < min ){
+    min = result[i,4]
+    index = i
+  }
+}
+
+##추출한 index를 기반으로 minsplit 최적해와 cp의 최적해를 도출
+minsplit_ = result[index,2]
+cp_ = result[index,1]
+
+plotcp(rpart_tree)
+
+postvec = c("best_minsplit","best_cp")
+postbest = cbind.data.frame(minsplit_,cp_)
+
+make_tree_r <- function(data, ...){
+  indexes = createDataPartition(data$CategoryF, p = .6, list = F)
+  rawtrain = data[indexes, ]
+  rawtest = data[-indexes, ]
+  fit <- rpart(CategoryF~.,
+               data = rawtrain,
+               cp = cp_,
+               minsplit = minsplit_,
+               xval = 10,
+               method = "class", ...)
+  pred = predict(fit, rawtest, type = "class", )
+  tmp <- data.frame(rawtest, pred)
+  acc <- sum(tmp$CategoryF == tmp$pred) / nrow(tmp)
+  #print(confusionMatrix(rawtest$rawheartDisease, pred, positive = '4'))
+  #print(acc * 100)
+  return(acc*100)
+}
+
+maxdepth_df <- data.frame(
+                         m = double(20),
+                         rawtrainAccuracy = double(20)
+                         )
+
+bestdepth = 0
+maxdepth_ = 0
+# rpart의 인자들을 다르게 해보자
+for(i in 1:20){ #최대 깊이를 1~20
+  ret = make_tree_r(rawheart, maxdepth = i)
+  maxdepth_df$rawtrainAccuracy[i] = ret
+  maxdepth_df$m[i] = i
+  if(ret > bestdepth){
+    bestdepth = ret
+    maxdepth_ = i
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=rawtrainAccuracy),size=1, color="red", data = maxdepth_df) +
+  labs(title = "LearningCurve\n", x = "maxdepth", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+
+minbucket_df <- data.frame(
+                         m = double(10),
+                         rawtrainAccuracy = double(10)
+                         )
+
+bestbucket = 0
+minbucket_ = 0 #default=minsplit/3
+for(i in 1:10){ # 1~10
+  ret = make_tree_r(rawheart, minbucket = i)
+  minbucket_df$rawtrainAccuracy[i] = ret
+  minbucket_df$m[i] = i
+  if(ret > bestbucket){
+    minbucket_ = i
+    bestbucket = ret
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=rawtrainAccuracy),size=1, color="red", data = minbucket_df) +
+  labs(title = "LearningCurve\n", x = "minbucket", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+maxsurrogate_df <- data.frame(
+                         m = double(10),
+                         rawtrainAccuracy = double(10)
+                         )
+
+bestmaxsurrogate = 0
+maxsurrogate_ = 5 #default=5
+for(i in 1:10){ # 1~10
+  ret = make_tree_r(rawheart, maxsurrogate = i)
+  maxsurrogate_df$rawtrainAccuracy[i] = ret
+  maxsurrogate_df$m[i] = i
+  if(ret > bestmaxsurrogate){
+    maxsurrogate_ = i
+    bestmaxsurrogate = ret
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=rawtrainAccuracy),size=1, color="red", data = maxsurrogate_df) +
+  labs(title = "LearningCurve\n", x = "maxsurrogate", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+
+
+
+maxcompete_df <- data.frame(
+                         m = double(10),
+                         rawtrainAccuracy = double(10)
+                         )
+
+bestmaxcompete = 0
+maxcompete_ = 4 #default=4
+for(i in 1:10){ # 1~10
+  ret = make_tree_r(rawheart, maxcompete = i)
+  maxcompete_df$rawtrainAccuracy[i] = ret
+  maxcompete_df$m[i] = i
+  if(ret > bestmaxcompete){
+    maxcompete_ = i
+    bestmaxcompete = ret
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=rawtrainAccuracy),size=1, color="red", data = maxcompete_df) +
+  labs(title = "LearningCurve\n", x = "maxcompete", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+
+
+
+
+usesurrogate_df <- data.frame(
+                         m = seq(0.1,2,0.1),
+                         rawtrainAccuracy = double(20)
+                         )
+
+
+bestusesurrogate = 0
+usesurrogate_ = 2 #default=2
+for(i in seq(0.1,2,0.1)){ # 0.1~2
+  ret = make_tree_r(rawheart, usesurrogate = i)
+  usesurrogate_df$rawtrainAccuracy[i*10] = ret
+  if(ret > bestusesurrogate){
+    usesurrogate_ = i
+    bestusesurrogate = ret
+  }
+}
+
+ggplot() + 
+  geom_line(mapping=aes(x=m, y=rawtrainAccuracy),size=1, color="red", data = usesurrogate_df) +
+  labs(title = "LearningCurve\n", x = "usesurrogate", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+
+
+paravec = c("best_maxdepth","best_minbucket","best_maxsurrogate","best_maxcompete","best_usesurrogate","best_minsplit","best_cp")
+bestdf = cbind.data.frame(maxdepth_,minbucket_,maxsurrogate_,maxcompete_,usesurrogate_,minsplit_,cp_)
+
+
+```
+
+##미가공 데이터셋 최적해 트리 적용- (미가공 데이터셋)
+```{R besttree2}
+##RPART 의사결정나무 적용
+rpart_tree_best <- rpart(CategoryF~.,
+        data = rawtrain,
+        parms = list(split = 'gini'),
+        cp = cp_,
+        minsplit = minsplit_,
+        minbucket = minbucket_,
+        maxdepth = maxdepth_,
+        maxcompete = maxcompete_, 
+        maxsurrogate = maxsurrogate_, 
+        usesurrogate = usesurrogate_, 
+        xval = 10,
+        method = "class")  
+
+## 성능평가
+result = printcp(rpart_tree_best)
+
+pred_best = predict(rpart_tree_best, rawtest, type = "class",)
+
+cf = confusionMatrix(as.factor(rawtest$CategoryF), pred_best)
+
+Accuracy=cf$overall[1]
+Sensitivity=cf$byClass[1]
+Specificity=cf$byClass[2]
+
+df = data.frame(Accuracy,Sensitivity,Specificity)
+print(df)
+
+## 시각화
+windows()
+fancyRpartPlot(rpart_tree_best)
+readline('Enter to resume ')
+dev.off()
+plotcp(rpart_tree_best)
+```
+
+
+## Ann (nnet Package)
+```{R ANN}
+
+NN = nnet(CategoryF ~ .,data=ftrain, size=2, decay=0.1)
+plot.nnet(NN)
+garson(NN)
+cf = confusionMatrix(factor(predict(NN, newdata=ftest, type="class"),levels = c("Donor","No")),
+                ftest$CategoryF)
+cf
+NN_pred <- ROCR::prediction(predict(NN, newdata=ftest, type="raw"), ftest$CategoryF)
+NN_roc <- performance(NN_pred, "tpr", "fpr")   # ROC-chart
+plot(NN_roc, colorize=TRUE)
+
+Accuracy=cf$overall[1]
+Sensitivity=cf$byClass[1]
+Specificity=cf$byClass[2]
+
+df = data.frame(Accuracy,Sensitivity,Specificity)
+print(df)
+
+```
+
+## Ann + train (nnet Package)
+```{R ANN1-1}
+NN_trainControl <- trainControl(
+  method = "repeatedcv",
+  number = 10,
+  repeats = 3, 
+  classProbs = TRUE,
+  summaryFunction = twoClassSummary
+)
+
+NN_tunegrid <- expand.grid(decay = seq(0.1,0.5,0.1),
+                             size = c(3:10)
+                             )
+Accuracy = c()
+Sensitivity = c()
+Specificity = c()
+```
+
+```{R trainANN1,,include=FALSE}
+NN_Train <- train(CategoryF~., data = ftrain,
+                        method = "nnet",
+                        metric = "ROC",
+                        tuneGrid = NN_tunegrid,
+                        trControl = NN_trainControl
+            )
+``` 
+
+```{R ANN1-2}
+plot(NN_Train,main = "LearningCurve By WD and Size")
+  
+NN = nnet(CategoryF ~ .,data=ftrain, size=as.numeric(NN_Train$bestTune[1]), decay=as.numeric(NN_Train$bestTune[2]))
+plot.nnet(NN)
+garson(NN)
+cf = confusionMatrix(factor(predict(NN, newdata=ftest, type="class"),levels = c("Donor","No")),ftest$CategoryF)
+  
+Accuracy=cf$overall[1]
+Sensitivity=cf$byClass[1]
+Specificity=cf$byClass[2]
+
+  
+NN_pred <- ROCR::prediction(predict(NN, newdata=ftest, type="raw"), ftest$CategoryF)
+NN_roc <- performance(NN_pred, "tpr", "fpr")   # ROC-chart
+plot(NN_roc, colorize=TRUE)
+
+df = data.frame(Accuracy,Sensitivity,Specificity)
+print(df)
+
+
+```
+
+## Ann + maxit조정 (nnet Package)
+Epoch를 조정하고 learning Curve 도시시
+```{R ANN2-1}
+Accuracy = c()
+Sensitivity = c()
+Specificity = c()
+Epoch = c()
+```
+
+```{R trainANN2,,include=FALSE}
+for(i in 10:300){
+NN = nnet(CategoryF ~ .,data=ftrain, size=as.numeric(NN_Train$bestTune[1]), decay=as.numeric(NN_Train$bestTune[2]), maxit=i)
+
+cf = confusionMatrix(factor(predict(NN, newdata=ftest, type="class"),levels = c("Donor","No")),
+                ftest$CategoryF)
+cf
+Epoch[i/10] = i
+Accuracy[i/10]=cf$overall[1]
+Sensitivity[i/10]=cf$byClass[1]
+Specificity[i/10]=cf$byClass[2]
+
+}
+```
+
+```{R ANN2-2}
+df = data.frame(Epoch,Accuracy,Sensitivity,Specificity)
+print(df)
+
+ggplot() + 
+  geom_line(mapping=aes(x=Epoch, y=Accuracy),size=1, color="red", data = df) +
+  labs(title = "LearningCurve\n", x = "Epoch", y = "Accuracy") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+
+
+
+```
+## SVM
+kernal종류 TEST
+```{R svm}
+
+rbfdot <- ksvm(CategoryF ~ ., data = ftrain, kernel = 'rbfdot')
+
+rbfdot_pred <- predict(rbfdot, ftest)
+
+rbfdot_table = table(rbfdot_pred, ftest$CategoryF)
+rbfdot_table
+rbfdot_ptable = prop.table(table(rbfdot_pred == ftest$CategoryF))
+rbfdot_ptable
+rbfdot_Accuracy=as.numeric(rbfdot_ptable[2])
+
+
+
+polydot <- ksvm(CategoryF ~ ., data = ftrain, kernel = 'polydot')
+
+polydot_pred <- predict(polydot, ftest)
+
+table(polydot_pred, ftest$CategoryF)
+polydot_ptable = prop.table(table(polydot_pred == ftest$CategoryF))
+polydot_ptable
+polydot_Accuracy=as.numeric(polydot_ptable[2])
+
+
+
+
+vanilladot <- ksvm(CategoryF ~ ., data = ftrain, kernel = 'vanilladot')
+
+vanilladot_pred <- predict(vanilladot, ftest)
+
+table(vanilladot_pred, ftest$CategoryF)
+vanilladot_ptable = prop.table(table(vanilladot_pred == ftest$CategoryF))
+vanilladot_ptable
+vanilladot_Accuracy=as.numeric(vanilladot_ptable[2])
+
+
+
+tanhdot <- ksvm(CategoryF ~ ., data = ftrain, kernel = 'tanhdot')
+
+tanhdot_pred <- predict(tanhdot, ftest)
+
+table(tanhdot_pred, ftest$CategoryF)
+tanhdot_ptable = prop.table(table(tanhdot_pred == ftest$CategoryF))
+tanhdot_ptable
+tanhdot_Accuracy=as.numeric(tanhdot_ptable[2])
+
+
+
+
+laplacedot <- ksvm(CategoryF ~ ., data = ftrain, kernel = 'laplacedot')
+
+laplacedot_pred <- predict(laplacedot, ftest)
+
+table(laplacedot_pred, ftest$CategoryF)
+laplacedot_ptable = prop.table(table(laplacedot_pred == ftest$CategoryF))
+laplacedot_ptable
+laplacedot_Accuracy=as.numeric(laplacedot_ptable[2])
+
+
+
+
+besseldot <- ksvm(CategoryF ~ ., data = ftrain, kernel = 'besseldot')
+
+besseldot_pred <- predict(besseldot, ftest)
+
+table(besseldot_pred, ftest$CategoryF)
+besseldot_ptable = prop.table(table(besseldot_pred == ftest$CategoryF))
+besseldot_ptable
+besseldot_Accuracy=as.numeric(besseldot_ptable[2])
+
+
+
+
+anovadot <- ksvm(CategoryF ~ ., data = ftrain, kernel = 'anovadot')
+
+anovadot_pred <- predict(anovadot, ftest)
+
+anovadot_table = table(anovadot_pred, ftest$CategoryF)
+anovadot_table
+anovadot_ptable = prop.table(table(anovadot_pred == ftest$CategoryF))
+anovadot_ptable
+anovadot_Accuracy=as.numeric(anovadot_ptable[2])
+
+
+
+splinedot <- ksvm(CategoryF ~ ., data = ftrain, kernel = 'splinedot')
+
+splinedot_pred <- predict(splinedot, ftest)
+
+table(splinedot_pred, ftest$CategoryF)
+splinedot_ptable = prop.table(table(splinedot_pred == ftest$CategoryF))
+splinedot_ptable
+splinedot_Accuracy=as.numeric(splinedot_ptable[2])
+
+```
+## 커널 종류별 정확도 시각화
+rbfdot이 제일 적합한 kernel임을 알 수 있다.
+```{r svm2}
+Accuracy = data.frame(kernel = c("rbfdot","polydot", "vanilladot","tanhdot", "laplacedot", "besseldot", "anovadot", "splinedot"),
+                      Accuracy = c(rbfdot_Accuracy,polydot_Accuracy,vanilladot_Accuracy,tanhdot_Accuracy,laplacedot_Accuracy,
+                                   besseldot_Accuracy,anovadot_Accuracy,splinedot_Accuracy)
+                      )
+
+ggplot(Accuracy, aes(x = kernel, y = Accuracy, fill = kernel)) +
+  coord_cartesian(ylim = c(0.87, 0.98)) +
+  geom_bar(stat = "identity") 
+
+anovadot_Accuracy
+rbfdot_Accuracy
+
+anovadot_table
+anovadot_Specificity = anovadot_table[4]/(anovadot_table[3]+anovadot_table[4])
+anovadot_Sensitivity = anovadot_table[1]/(anovadot_table[1]+anovadot_table[2])
+anovadot_Sensitivity
+anovadot_Specificity
+
+rbfdot_table
+rbfdot_Specificity = rbfdot_table[4]/(rbfdot_table[3]+rbfdot_table[4])
+rbfdot_Sensitivity = rbfdot_table[1]/(rbfdot_table[1]+rbfdot_table[2])
+rbfdot_Sensitivity
+rbfdot_Specificity
+
+SenSpe = data.frame(kernel = c("rbfdot","anovadot"),
+                      Accuracy = c(rbfdot_Accuracy,anovadot_Accuracy),
+                      Sensitivity = c(rbfdot_Sensitivity,anovadot_Sensitivity),
+                      Specificity = c(rbfdot_Specificity,anovadot_Specificity)
+                      )
+
+SenSpe
+
+```

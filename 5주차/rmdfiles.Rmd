@@ -1,0 +1,424 @@
+---
+title: "Prunning Tree"
+author: "빈정수"
+date: '2022-04-01'
+output: html_document
+---
+
+Amazon Mechanical Turk란 무엇인가요?
+
+Amazon Mechanical Turk는 요청자가 HIT(인간 지능 작업)로 작업을 게시하는 포럼입니다. 작업자는 보수에 대한 대가로 HIT를 완료합니다. Mechanical Turk 개발자 샌드박스, Amazon Mechanical Turk API 및 AWS SDK를 사용하여 HIT를 작성, 테스트 및 게시합니다.
+
+##데이터 전처리
+factor형으로 변환하였다.
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(tidyverse)
+library(rpart)
+library(caret)
+library(RColorBrewer)
+library(rattle)
+#library(party)
+library(rpart.plot)
+#library(partykit)
+
+# set seed for reproducibility
+set.seed(1123)
+
+#경로 강제로 상대경로로 변환하는 함수
+set_file_directory <- function(){
+  source = rstudioapi::getSourceEditorContext()$path
+  source = head(unlist(strsplit(source, split = "/")),-1)
+  source = paste(source, collapse="/")
+  setwd(source)
+}
+set_file_directory()
+
+# 데이터 불러오기
+ob <- read.csv("./ObesityDataSet.csv", header = T)
+
+# 목표변수 4가지로 변환 후 상관계수 계산을 위해 수치형으로 변경경
+ob$NObeyesdad[ob$NObeyesdad == 'Insufficient_Weight'] <- 1
+ob$NObeyesdad[ob$NObeyesdad == 'Normal_Weight'] <- 2
+ob$NObeyesdad[ob$NObeyesdad == 'Overweight_Level_I' | ob$NObeyesdad == 'Overweight_Level_II'] <- 3
+ob$NObeyesdad[ob$NObeyesdad == 'Obesity_Type_I' | ob$NObeyesdad == 'Obesity_Type_II' | ob$NObeyesdad == 'Obesity_Type_III'] <- 4
+ob$NObeyesdad <- as.numeric(ob$NObeyesdad)
+
+# 데이터 전처리 : factor형으로 변경할거 변경
+ob1 <- data.frame(Gender = as.factor(ob$Gender),
+                  Age = ob$Age,
+                  Height = ob$Height,
+                  Weight = ob$Weight,
+                  family_history = as.factor(ob$family_history_with_overweight),
+                  FAVC = as.factor(ob$FAVC),
+                  FCVC = ob$FCVC,
+                  NCP = ob$NCP,
+                  CAEC = factor(ob$CAEC, levels = c('no', 'Sometimes', 'Frequently', 'Always')),
+                  SMOKE = as.factor(ob$SMOKE),
+                  CH2O = ob$CH2O,
+                  SCC = as.factor(ob$SCC),
+                  FAF = ob$FAF,
+                  TUE = ob$TUE,
+                  CALC = factor(ob$CALC, levels = c('no', 'Sometimes', 'Frequently', 'Always')),
+                  MTRANS = factor(ob$MTRANS, levels = c('Walking', 'Bike', 'Public_Transportation', 'Motorbike', 'Automobile')),
+                  NObeyesdad = factor(ob$NObeyesdad, levels = c(1, 2, 3, 4)))
+
+##TRAIN집단,TEST집단 분류
+indexes = createDataPartition(ob1$NObeyesdad, p = .66, list=F)
+train = ob1[indexes, ]
+test =  ob1[-indexes, ]
+```
+
+##목표 변수에 대한 분석
+
+```{r DEA}
+# 목표변수 비율 그래프 그리는 것들
+library(ggplot2)
+freqob <- xtabs(~NObeyesdad, data = ob1)
+proportions(freqob) *100
+
+ggplot(ob1, aes(x = NObeyesdad)) + geom_bar(fill = c(1, 2, 3, 4))
+freqob
+pie(freqob)
+
+# 수치형 변수들과 상관계수 계산
+cor(ob1$Age, ob$NObeyesdad)
+cor(ob1$Height, ob$NObeyesdad)
+cor(ob1$Weight, ob$NObeyesdad)
+cor(ob1$FCVC, ob$NObeyesdad)
+cor(ob1$NCP, ob$NObeyesdad)
+cor(ob1$CH2O, ob$NObeyesdad)
+cor(ob1$FAF, ob$NObeyesdad)
+cor(ob1$TUE, ob$NObeyesdad)
+
+# 명목형 변수들의 상태표 출력
+# ~표시 우측에 원하는 변수들 이용해 비율 확인 가능
+# Gender, family_history, FAVC, CAEC, SMOKE, SCC, CALC, MTRANS
+# ~ 과 + 사이에 원하는 명목형 변수 넣어서 확인
+feq <- xtabs(~ Gender + NObeyesdad, data = ob1) #절대값 출력
+feq
+addmargins(feq)
+proportions(feq, 1) *100 #가로, 비율들 출력
+proportions(feq, 2) *100 #세로
+
+```
+
+## FullTree 그려보기
+cp,minsplit 구하기 위해 일단 한번 그려봅니다.
+Accuracy : 0.9469   
+Sensitivity            0.9457   0.8571   0.9424   0.9761
+Specificity            0.9920   0.9790   0.9676   0.9921
+
+```{r fulltree}
+##RPART 의사결정나무 적용
+rpart_tree <- rpart(NObeyesdad~.,
+                    data = train,
+                    cp = -1,
+                    minsplit = 10)
+
+## 성능평가
+result = printcp(rpart_tree)
+
+pred = predict(rpart_tree, test, type = "class",)
+confusionMatrix(as.factor(test$NObeyesdad), pred)
+
+##xerror가 최소인 곳에서의 index 추출
+min = 1.1
+index = 0
+cp_ = 0
+for(i in 1:length(result[,1])){
+  if( result[i,4] < min ){
+    min = result[i,4]
+    index = i
+  }
+}
+
+##추출한 index를 기반으로 minsplit 최적해와 cp의 최적해를 도출출
+minsplit_ = result[index,2]
+cp_ = result[index,1]
+
+## 시각화
+windows()
+fancyRpartPlot(rpart_tree)
+readline('Enter to resume ')
+dev.off()
+plotcp(rpart_tree)
+
+postvec = c("best_minsplit","best_cp")
+postbest = cbind.data.frame(minsplit_,cp_)
+names(postbest) = postvec
+postbest
+```
+
+## 다른 prunning 지표 도출
+
+
+```{r otherbest}
+make_tree_r <- function(data, ...){
+  indexes = createDataPartition(data$NObeyesdad, p = .6, list = F)
+  train = data[indexes, ]
+  test = data[-indexes, ]
+  fit <- rpart(NObeyesdad~.,
+               data = train,
+               cp = cp_,
+               minsplit = minsplit_,
+               xval = 10,
+               method = "class", ...)
+  pred = predict(fit, test, type = "class", )
+  tmp <- data.frame(test, pred)
+  acc <- sum(tmp$NObeyesdad == tmp$pred) / nrow(tmp)
+  #print(confusionMatrix(test$NObeyesdad, pred, positive = '4'))
+  #print(acc * 100)
+  return(acc*100)
+}
+
+bestdepth = 0
+maxdepth_ = 0
+# rpart의 인자들을 다르게 해보자
+for(i in 1:20){ #최대 깊이를 1~20
+  if((ret = make_tree_r(ob1, maxdepth = i)) > bestdepth){
+    bestdepth = ret
+    maxdepth_ = i
+  }
+}
+
+bestbucket = 0
+minbucket_ = 0 #default=minsplit/3
+for(i in 1:10){ # 1~10
+  ret = make_tree_r(ob1, minbucket = i)
+  if(ret > bestbucket){
+    minbucket_ = i
+    bestbucket = ret
+  }
+}
+
+bestmaxsurrogate = 0
+maxsurrogate_ = 5 #default=5
+for(i in 1:10){ # 1~10
+  ret = make_tree_r(ob1, maxsurrogate = i)
+  if(ret > bestmaxsurrogate){
+    maxsurrogate_ = i
+    bestmaxsurrogate = ret
+  }
+}
+
+bestmaxcompete = 0
+maxcompete_ = 4 #default=4
+for(i in 1:10){ # 1~10
+  ret = make_tree_r(ob1, maxcompete = i)
+  if(ret > bestmaxcompete){
+    maxcompete_ = i
+    bestmaxcompete = ret
+  }
+}
+
+bestusesurrogate = 0
+usesurrogate_ = 2 #default=2
+for(i in seq(0.1,2,0.1)){ # 0.1~2
+  ret = make_tree_r(ob1, usesurrogate = i)
+  if(ret > bestusesurrogate){
+    usesurrogate_ = i
+    bestusesurrogate = ret
+  }
+}
+
+paravec = c("best_maxdepth","best_minbucket","best_maxsurrogate","best_maxcompete","best_usesurrogate","best_minsplit","best_cp")
+bestdf = cbind.data.frame(maxdepth_,minbucket_,maxsurrogate_,maxcompete_,usesurrogate_,minsplit_,cp_)
+names(bestdf) = paravec
+bestdf
+```
+
+## Post-Prunning 트리 그려보기
+최적 cp값을 적용
+Accuracy : 0.9344  
+Sensitivity            0.9651   0.7946   0.9500   0.9645
+Specificity            0.9857   0.9868   0.9515   0.9894
+```{r postTree}
+##RPART 의사결정나무 적용
+rpart_tree_prep <- rpart(NObeyesdad~.,
+        data = train,
+        parms = list(split = 'gini'),
+        cp = cp_,
+        xval = 10,
+        method = "class")  
+
+## 성능평가
+result = printcp(rpart_tree_prep)
+
+pred = predict(rpart_tree_prep, test, type = "class",)
+confusionMatrix(as.factor(test$NObeyesdad), pred)
+
+## 시각화
+windows()
+fancyRpartPlot(rpart_tree_prep)
+readline('Enter to resume ')
+dev.off()
+plotcp(rpart_tree_prep)
+```
+
+## Pre-Prunning 트리 그려보기
+cp를 제외한 요소들을 투입.
+Accuracy : 0.9134
+Sensitivity            0.8958  0.82143   0.8756   0.9642
+Specificity            0.9903  0.95570   0.9592   0.9816
+```{r preTree}
+##RPART 의사결정나무 적용
+rpart_tree_prep <- rpart(NObeyesdad~.,
+        data = train,
+        parms = list(split = 'gini'),
+        minbucket = minbucket_,
+        maxdepth = maxdepth_,
+        maxcompete = maxcompete_, 
+        maxsurrogate = maxsurrogate_, 
+        usesurrogate = usesurrogate_,
+        minsplit = minsplit_,
+        xval = 10,
+        method = "class")  
+
+## 성능평가
+result = printcp(rpart_tree_prep)
+
+pred = predict(rpart_tree_prep, test, type = "class",)
+confusionMatrix(as.factor(test$NObeyesdad), pred)
+
+## 시각화
+windows()
+fancyRpartPlot(rpart_tree_prep)
+readline('Enter to resume ')
+dev.off()
+plotcp(rpart_tree_prep)
+```
+
+
+## 최적해 트리 그려보기
+종합적용한 트리를 그리기
+Accuracy : 0.9232
+Sensitivity            0.9231   0.8298   0.9067   0.9586
+Specificity            0.9872   0.9695   0.9579   0.9841
+
+```{r bestTree}
+##RPART 의사결정나무 적용
+rpart_tree_prep <- rpart(NObeyesdad~.,
+        data = train,
+        parms = list(split = 'gini'),
+        cp = cp_,
+        minsplit = minsplit_,
+        minbucket = minbucket_,
+        maxdepth = maxdepth_,
+        maxcompete = maxcompete_, 
+        maxsurrogate = maxsurrogate_, 
+        usesurrogate = usesurrogate_, 
+        xval = 10,
+        method = "class")  
+
+## 성능평가
+result = printcp(rpart_tree_prep)
+
+pred = predict(rpart_tree_prep, test, type = "class",)
+confusionMatrix(as.factor(test$NObeyesdad), pred)
+
+## 시각화
+windows()
+fancyRpartPlot(rpart_tree_prep)
+readline('Enter to resume ')
+dev.off()
+plotcp(rpart_tree_prep)
+
+##rpart.rules 사용
+party_obj <- as.party.rpart(rpart_tree_prep, data = TRUE)
+decisions <- partykit:::.list.rules.party(party_obj)
+cat(paste(decisions, collapse = "\n"))
+```
+
+
+
+## LearningCurve 성능추이 
+전체 표본의 수가 2100이 될 때까지 실행하였다.(전체표본 = 2111)
+```{r learningcurve}
+
+sample_seed_list = c(sample(x=1:99999,size=10))
+
+# create empty data frame 
+learnCurve_test <- data.frame(
+                         m = double(21),
+                         trainAccuracy = double(21),
+                         trainAccuracyLower = double(21),
+                         trainAccuracyUpper = double(21)
+                         )
+
+learnCurve_train <- data.frame(
+                         m = double(21),
+                         trainAccuracy = double(21),
+                         trainAccuracyLower = double(21),
+                         trainAccuracyUpper = double(21)
+                         )
+
+# loop 10 times over training examples for testsample
+for (j in sample_seed_list){
+  set.seed(sample_seed_list)
+  for (i in 1:21 ) {
+    learnCurve_test$m[i] <- i*60
+    learnCurve_train$m[i] <- i*60
+    
+    sampledData <- ob1[sample(1:nrow(ob1), 100*i, replace = TRUE),]
+    # split ob1 into training and test sets
+    idIndex <- createDataPartition(sampledData$NObeyesdad, p = 0.6, list = F)
+    sampledDataTrain <- sampledData[idIndex,]
+    sampledDataTest <- sampledData[-idIndex,]
+    
+    # train learning algorithm with size i  train-test
+    rpart_tree_prep <- rpart(NObeyesdad~.,
+             data = sampledDataTrain,
+             parms = list(split = 'gini'),
+             cp = cp_,
+             minsplit = minsplit_,
+             minbucket = minbucket_,
+             maxdepth = maxdepth_,
+             maxcompete = maxcompete_, 
+             maxsurrogate = maxsurrogate_, 
+             usesurrogate = usesurrogate_, 
+             xval = 10,
+             method = "class")  
+    
+    pred = predict(rpart_tree_prep, sampledDataTest, type = "class",)
+    result = confusionMatrix(as.factor(sampledDataTest$NObeyesdad), pred)
+    
+    learnCurve_test$trainAccuracy[i] = learnCurve_test$trainAccuracy[i] + getElement(result$overall, "Accuracy")
+    learnCurve_test$trainAccuracyLower[i] = learnCurve_test$trainAccuracyLower[i] + getElement(result$overall, "AccuracyLower")
+    learnCurve_test$trainAccuracyUpper[i] = learnCurve_test$trainAccuracyUpper[i] + getElement(result$overall, "AccuracyUpper")
+    
+    pred_ = predict(rpart_tree_prep, sampledDataTrain, type = "class",)
+    result_ = confusionMatrix(as.factor(sampledDataTrain$NObeyesdad), pred_)
+    
+    learnCurve_train$trainAccuracy[i] = learnCurve_train$trainAccuracy[i] + getElement(result_$overall, "Accuracy")
+    learnCurve_train$trainAccuracyLower[i] = learnCurve_train$trainAccuracyLower[i] + getElement(result_$overall, "AccuracyLower")
+    learnCurve_train$trainAccuracyUpper[i] = learnCurve_train$trainAccuracyUpper[i] + getElement(result_$overall, "AccuracyUpper")
+  
+  }
+}
+# get mean of 10 times of values
+learnCurve_test$trainAccuracy = learnCurve_test$trainAccuracy / 10
+learnCurve_test$trainAccuracyLower = learnCurve_test$trainAccuracyLower / 10
+learnCurve_test$trainAccuracyUpper = learnCurve_test$trainAccuracyUpper / 10
+
+# get mean of 10 times of values
+learnCurve_train$trainAccuracy = learnCurve_train$trainAccuracy / 10
+learnCurve_train$trainAccuracyLower = learnCurve_train$trainAccuracyLower / 10
+learnCurve_train$trainAccuracyUpper = learnCurve_train$trainAccuracyUpper / 10
+
+# plot accuracy and accuracy range
+ggplot() + 
+  geom_ribbon(mapping=aes(x=m, ymin=trainAccuracyLower, ymax=trainAccuracyUpper),fill = "grey70", data = learnCurve_test) + 
+  ##geom_ribbon(mapping=aes(x=m, ymin=trainAccuracyLower, ymax=trainAccuracyUpper),fill = "slategray4", data = learnCurve_train) + 
+  geom_line(mapping=aes(x=m, y=trainAccuracy),size=1, color="blue", data = learnCurve_test) +
+  geom_line(mapping=aes(x=m, y=trainAccuracy),size=1, color="red", data = learnCurve_train) +
+  xlim(60, 1260) + ylim(0.5, 1.02) + 
+  labs(title = "LearningCurve\n", x = "TrainingSample", y = "Performance") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 20, face = "bold", color = "darkgreen"))
+
+## red for Train set // blue for Test set
+```

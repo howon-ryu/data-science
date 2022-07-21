@@ -1,0 +1,728 @@
+---
+필요한 페키지와 라이브러리
+
+---
+
+```{r setup, include=FALSE}
+#install.packages("Amelia")
+#install.packages("mice")
+#install.packages("naivebayes")
+library(MASS)
+library(Amelia)
+library(tidyverse)
+library(ggplot2)
+library(caret)
+
+library(psych)
+library(Amelia)
+library(mice)
+library(GGally)
+library(rpart)
+#library(randomForest)
+library(klaR) # for NaiveBayes (=nb) function
+library(naivebayes)
+library(mice)
+library(e1071)
+library(dplyr)
+library(caret)
+library(rattle)
+library(rpart)
+```
+
+아이리스 데이터 셋 사용
+
+```{r cars}
+data <- iris
+data
+data[, -5]
+```
+
+난수를 고정하고 결측치를 확인
+=> 결측치 없음음
+```{r pressure, echo=FALSE}
+set.seed(100)
+
+missmap(data)
+
+```
+예측 변수들을 시각화(정규분포) B-iii
+
+
+```{r}
+ggplot(data, aes(Sepal.Length, colour = Sepal.Length)) +
+  geom_freqpoly(binwidth = 1) + labs(title="Sepal.Length Distribution by Outcome")
+
+
+ggplot(data, aes(Sepal.Width, colour = Sepal.Width)) +
+  geom_freqpoly(binwidth = 1) + labs(title="Sepal.Width Distribution by Outcome")
+
+
+
+ggplot(data, aes(Petal.Length, colour = Petal.Length)) +
+  geom_freqpoly(binwidth = 1) + labs(title="Petal.Length Distribution by Outcome")
+
+ggplot(data, aes(Petal.Width, colour = Petal.Width)) +
+  geom_freqpoly(binwidth = 1) + labs(title="Petal.Width Distribution by Outcome")
+```
+A-iii
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ독립성 검증 전, 일반모델과 나이브 모델 비교ㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+예측 변수들 간의 독립성을 확인해보기전 일반 풀트리 모델과 나이브 베이지안 모델의 정확도 비교
+
+
+```{r}
+# 트레이닝/ 테스트 셋 구성
+indxTrain <- createDataPartition(y = data$Species,p = 0.75,list = FALSE)
+#indxTrain
+training <- data[indxTrain,] # 트레이닝
+#training
+testing <- data[-indxTrain,] 
+#testing# 테스트
+
+#Species 비율
+prop.table(table(training$Species)) * 100 #트레이닝의 Species 비율
+prop.table(table(testing$Species)) * 100 #테스트의 Species 비율
+
+#트레이닝 셋 변수 나누기
+x = training[,-5] #예측변수
+#x
+
+
+y = training$Species # 목표 변수
+#y
+
+# rpart모델 만들기
+fit <- rpart(Species~.,
+             data = training,
+             minsplit = 2,
+             minbucket = 1,
+             maxdepth = 30,
+             cp = -1, method = "class")
+#fit
+
+pred = predict(fit, testing, type = "class" )
+#pred
+tmp <- data.frame(testing, pred)
+acc <- sum(tmp$Species == tmp$pred) / nrow(tmp)
+acc # 0.9166
+
+#나이브 베이지안 모델 생성
+model <- naiveBayes(x,training$Species)
+#model
+
+
+
+#프레딕트
+p <- predict(model, testing, type='class')
+#p
+
+
+#분류모델 평가(예측 모델 평가)
+t<- table(p, testing$Species)
+#t 
+
+
+#분류 정확도
+(t[1,1]+t[2,2]+t[3,3])/nrow(testing)
+#confusionMatrix(p, testing$Species) # 0.9444
+
+
+#-------------------------------------------
+#일반모델 vs naive => 0.9166vs0.9444
+#-------------------------------------------
+```
+일반 rpart 풀트리+ pdf
+
+```{r}
+
+fit <- rpart(Species~.,
+             data = training,
+             minsplit = 2,
+             minbucket = 1,
+             maxdepth = 30,
+             cp = -1, method = "class")
+fit
+pdf("tree.pdf")
+fancyRpartPlot(fit)
+
+dev.off()
+```
+A-i
+B-i
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ독립성 검증ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+1. 전체 상관계수 구하기
+2. 카이스퀘어드 구하기
+3. p-value값 비교
+4. 두개의 예측변수를 하나는 목표 변수, 하나는 예측 변수로 하는 모델 생성후 성능평가
+
+```{r}
+
+```
+
+
+
+1. 전체 상관계수
+
+sepal.length  -  petal.length 와 petal.width
+petal.length - petal.width
+가 상관관계가 너무 높음 ==>  독립 x
+
+
+```{r}
+ggpairs(data)
+
+pairs(data)
+
+cor(data[,-5])
+```
+
+2. p-value 비교
+
+=>1번에서 상관도가 높은 예측변수들을 바탕으로 p-value를 측정하였을때 유의 하다는 결론이 나옴
+하지만 1번에서 상관도가 없다고 나오는 sepal.width와 petal.length도 p-value상에서 독립적으로 나옴
+
+==> p-value는 명목형 변수들에 사용 ==> 상관도 파악 불가
+
+```{r}
+#p-value<0.05 ==> 유의 하다=> 상관관계가 있다=> 귀무가설 기각=>독립적 x
+#Sepal.Length-Petal.Length 상관관계 => p-value < 2.2e-16=0.00000000000000022
+cor.test(data$Sepal.Length, data$Petal.Length, method = "pearson")
+
+#Sepal.Length-Petal.Width  상관관계 => p-value < 2.2e-16
+cor.test(data$Sepal.Length, data$Petal.Width, method = "pearson")
+
+#Sepal.Width-Petal.Width 상관관계 => p-value = 4.073e-06=0.000004
+cor.test(data$Sepal.Width, data$Petal.Width, method = "pearson")
+
+#p-value = 4.513e-08=p-value = 4.513e-08 ?????
+cor.test(data$Sepal.Width, data$Petal.Length, method = "pearson")
+```
+3.카이 제곱 검정
+
+예측변수들이 전부 수치형 이기에 불가능
+```{r}
+chisq.test(data[,-5])
+```
+B-i
+4. 예측 변수의 두가지를 골라서, 
+   하나를 예측변수, 다른하나를 목표변수로 설정할때,
+   정확도 계산해보기
+
+sepal.length-sepal.width
+sepal.length-petal.length
+sepal.width-petal.length
+sepal.width-petal.width
+petal.length-petal.width
+
+==>sepal.width-petal.width 와 petal.length-petal.width의 정확도가 20%를 상회
+즉, petal.width 는 나이브 모델에서 제거하기로 결정
+
+다만 sepal.length-sepal.width 의경우 정확도가 8%~16%를 왔다갔다 함으로 추후에 
+독립성이 낮은 쌍의 베이지안 확률 검증에 사용
+
+
+```{r}
+#sepal.length로 sepal.width예측 acc = 0.16666
+indxTrain <- createDataPartition(y = data$Species,p = 0.75,list = FALSE)
+#indxTrain
+training <- data[indxTrain,c(1,2)] # 트레이닝
+#training
+testing <- data[-indxTrain,c(1,2)] 
+#testing# 테스트
+
+fit <- rpart(Sepal.Width~.,
+             data = training,
+             cp = -1, method = "class")
+#fit
+
+pred = predict(fit, testing, type = "class" )
+#pred
+#testing
+tmp <- data.frame(testing, pred)
+#tmp
+#tmp$pred
+acc <- sum(tmp$Sepal.Width == tmp$pred) / nrow(tmp)
+acc
+```
+
+```{r}
+#sepal.length로 petal.length예측 acc = 0.0833
+indxTrain <- createDataPartition(y = data$Species,p = 0.75,list = FALSE)
+#indxTrain
+training <- data[indxTrain,c(1,3)] # 트레이닝
+#training
+testing <- data[-indxTrain,c(1,3)] 
+#testing# 테스트
+
+fit <- rpart(Petal.Length~.,
+             data = training,
+             cp = -1, method = "class")
+#fit
+
+pred = predict(fit, testing, type = "class" )
+#pred
+#testing
+tmp <- data.frame(testing, pred)
+
+#tmp
+#tmp$pred
+acc <- sum(tmp$Petal.Length == tmp$pred) / nrow(tmp)
+acc
+```
+
+```{r}
+#sepal.length로 petal.width예측 acc = 0.2222
+indxTrain <- createDataPartition(y = data$Species,p = 0.75,list = FALSE)
+#indxTrain
+training <- data[indxTrain,c(1,4)] # 트레이닝
+#training
+testing <- data[-indxTrain,c(1,4)] 
+#testing# 테스트
+
+fit <- rpart(Petal.Width~.,
+             data = training,
+             cp = -1, method = "class")
+#fit
+
+pred = predict(fit, testing, type = "class" )
+#pred
+#testing
+tmp <- data.frame(testing, pred)
+#tmp
+#tmp$pred
+
+acc <- sum(tmp$Petal.Width == tmp$pred) / nrow(tmp)
+acc
+```
+
+```{r}
+#sepal.width로 petal.length예측 acc = 0.08333
+indxTrain <- createDataPartition(y = data$Species,p = 0.75,list = FALSE)
+#indxTrain
+training <- data[indxTrain,c(2,3)] # 트레이닝
+#training
+testing <- data[-indxTrain,c(2,3)] 
+#testing# 테스트
+
+fit <- rpart(Petal.Length~.,
+             data = training,
+             cp = -1, method = "class")
+#fit
+
+pred = predict(fit, testing, type = "class" )
+#pred
+#testing
+tmp <- data.frame(testing, pred)
+#tmp
+#tmp$pred
+
+acc <- sum(tmp$Petal.Length == tmp$pred) / nrow(tmp)
+acc
+```
+
+```{r}
+#petal.length로 petal.width예측 acc = 0.25
+indxTrain <- createDataPartition(y = data$Species,p = 0.75,list = FALSE)
+#indxTrain
+training <- data[indxTrain,c(3,4)] # 트레이닝
+#training
+testing <- data[-indxTrain,c(3,4)] 
+#testing# 테스트
+
+fit <- rpart(Petal.Width~.,
+             data = training,
+             cp = -1, method = "class")
+#fit
+
+pred = predict(fit, testing, type = "class" )
+#pred
+#testing
+tmp <- data.frame(testing, pred)
+#tmp
+#tmp$pred
+
+acc <- sum(tmp$Petal.Width == tmp$pred) / nrow(tmp)
+acc
+```
+petal.width 제거
+```{r}
+indxTrain <- createDataPartition(y = data$Species,p = 0.75,list = FALSE)
+#indxTrain
+training <- data[indxTrain,] # 트레이닝
+#training
+testing <- data[-indxTrain,] 
+#testing# 테스트
+#training
+x = training[,-4] #예측변수
+x
+```
+
+
+B-ii, B-iii
+
+bayesian 모델과 naive bayesian 공식을 통한 실제 사례의 분류 확률 계산
+을 하기전, 확률을 계산 해볼 표본 선정(독립성이 높은 변수 쌍, 독립성이 낮은 변수 쌍)
+선정 기준은 예측변수가 2가지 이상 사용되었으며 그중 가장 많은 비율 을 차지하고 있는 
+표본으로 선정
+
+독립성이 높은 변수 쌍: sepal.length, petal.length
+독립성이 낮은 변수 쌍: sepal.length, sepal.width
+
+```{r}
+#sepal.length, petal.length 독립성이 큰 예측 변수 쌍 + pdf
+# 2.6<petal.lengh<4.8 sepal.length>=5 =>31%
+x[,c(1,3,4)]
+fit_ind_high <- rpart(Species~.,
+             data = x[,c(1,3,4)],
+             minsplit = 2,
+             minbucket = 1,
+             maxdepth = 30,
+             cp = -1, method = "class")
+fit_ind_high
+pdf("tree_ind_high.pdf")
+fancyRpartPlot(fit_ind_high)
+
+dev.off()
+```
+
+트리로 보았을때 2.6<petal.lengh<4.8 and sepal.length>=5 =>31% 인 표본으로 선정
+x1: 2.6<petal.lengh<4.8 || x2 : sepal.length>=5 으로 설정
+y : versicolor 으로 설정
+
+먼저 독립성이 큰 예측 변수 쌍의 베이즈 확률 구하기
+베이즈 정리 : p(y|x) = p(x1,x2|y)*p(y)/p(x1,x2)
+
+```{r}
+# 분자 - p(x1,x2|y)
+ind_x1_x2_y<-0
+ind_y<-0
+
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,4]=="versicolor"){
+    ind_y = ind_y+1
+    if(x[i,3]>2.6){
+
+      if(x[i,3]<4.8){
+        
+        if(x[i,1]>=5){
+          ind_x1_x2_y= ind_x1_x2_y+1
+        }
+        
+      }
+    }
+  }
+}
+ind_y
+ind_x1_x2_y
+ind_p_x1_x2_y<-ind_x1_x2_y/ind_y
+ind_p_x1_x2_y
+```
+
+
+
+```{r}
+# 분자-p(y)
+ind_result<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,4]=="versicolor"){
+    ind_result = ind_result+1
+  }
+}
+ind_p_y<-ind_result/nrow(x)
+ind_p_y
+```
+
+
+```{r}
+# 총 분자
+ind_bayes_up<-ind_p_x1_x2_y*ind_p_y
+ind_bayes_up
+```
+
+```{r}
+# 분모-p(x1,x2)
+ind_x1_x2<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,3]>2.6){
+    
+    if(x[i,3]<4.8){
+      
+      if(x[i,1]>=5){
+        ind_x1_x2= ind_x1_x2+1
+      }
+      
+    }
+  }
+}
+
+ind_bayes_down<-ind_x1_x2/nrow(x)
+ind_bayes_down
+```
+독립성이 큰 변수 쌍의 베이지안 확률
+
+```{r}
+# 독립성 큰 베이지안 확률=>1
+ind_bayes<-ind_bayes_up/ind_bayes_down
+ind_bayes
+```
+독립성이 큰 나이브 베이지안
+
+나이브 베이지안 정리 : p(y|x) = p(x1|y)*p(x2|y)*p(y)/p(x1,x2)
+
+```{r}
+# 분자 p(y)
+ind_result<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,4]=="versicolor"){
+    ind_result = ind_result+1
+  }
+}
+ind_p_y<-ind_result/nrow(x)
+ind_p_y
+```
+
+```{r}
+# 분자 p(x1|y)
+ind_nresult<-0
+ind_n_p_x1<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,4]=="versicolor"){
+    ind_nresult = ind_nresult+1
+    if(x[i,3]>2.6){
+      if(x[i,3]<4.8){
+        ind_n_p_x1 = ind_n_p_x1+1
+      }
+        
+    }
+  }
+}
+ind_n_p_x1_y<-ind_n_p_x1/ind_nresult
+ind_n_p_x1_y
+```
+
+```{r}
+
+#분자 p(x2|y)
+ind_nresult<-0
+ind_n_p_x2<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,4]=="versicolor"){
+    ind_nresult = ind_nresult+1
+    if(x[i,1]>=5){
+      ind_n_p_x2=ind_n_p_x2+1
+      
+    }
+  }
+}
+ind_n_p_x2_y<-ind_n_p_x2/ind_nresult
+ind_n_p_x2_y
+```
+
+```{r}
+# 독립성 큰 나이브 베이지안 총 분자
+ind_nbayes_up<-ind_n_p_x1_y*ind_n_p_x2_y*ind_p_y
+ind_nbayes_up
+```
+
+```{r}
+# 독립성 큰 나이브 베이지안 분모
+ind_n_x1_x2<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,3]>2.6){
+    
+    if(x[i,3]<4.8){
+      
+      if(x[i,1]>=5){
+        ind_n_x1_x2= ind_n_x1_x2+1
+      }
+      
+    }
+  }
+}
+ind_nbayes_down<-ind_n_x1_x2/nrow(x)
+ind_nbayes_down
+```
+독립성이 큰 변수 쌍의 나이브 베이지안 확률
+
+```{r}
+# 독립성 큰 나이브 베이지안 확률 =>1
+
+ind_nbayes<-ind_nbayes_up/ind_nbayes_down
+ind_nbayes
+```
+
+독립성이 낮은 예측변수 + 트리 pdf
+```{r}
+#sepal.length, sepal.width 독립성이 작은 예측 변수 쌍
+#  width>2.7 , legth<5.35 ==> 27% (setosa)
+cor(data[,-5])
+
+x[,c(1,2,4)]
+fit_ind_low <- rpart(Species~.,
+                      data = x[,c(1,2,4)],
+                      minsplit = 2,
+                      minbucket = 1,
+                      maxdepth = 30,
+                      cp = -1, method = "class")
+fit_ind_low
+pdf("tree_ind_low.pdf")
+fancyRpartPlot(fit_ind_low)
+
+dev.off()
+```
+
+
+두번째로, 독립성이 낮은 예측 변수 쌍의 베이즈 확률 구하기
+#  width>2.7 , legth<5.35 ==> 27% (setosa)
+x1: width>2.7 || x2 : legth<5.35 으로 설정
+y : setosa 로 설정
+
+
+베이즈 정리 : p(y|x) = p(x1,x2|y)*p(y)/p(x1,x2)
+```{r}
+#분자 = py
+result<-0
+for(i in 1:114){ 
+  if(x[i,4]=="setosa"){
+    result = result+1
+  }
+}
+p_y<-result/nrow(x)
+p_y
+```
+
+```{r}
+# 분자 - p(x1,x2|y)
+x1_x2_y<-0
+y<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,4]=="setosa"){
+    y = y+1
+    if(x[i,1]<5.35){
+      if(x[i,2]>2.7){
+        x1_x2_y= x1_x2_y+1
+      }
+    }
+  }
+}
+#y
+p_x1_x2_y<-x1_x2_y/y
+p_x1_x2_y
+```
+
+```{r}
+# 총 분자
+bayes_up<-p_y*p_x1_x2_y
+bayes_up
+```
+
+```{r}
+#분모 p(x1,x2)
+x1_x2<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,1]<5.35){
+    if(x[i,2]>2.7){
+      x1_x2 = x1_x2+1
+    }
+  }
+}
+
+bayes_down<-x1_x2/nrow(x)
+bayes_down
+```
+
+독립성이 낮은 변수 쌍의 베이즈 확률
+
+```{r}
+# 베이즈 확률 = >1
+bayes<-bayes_up/bayes_down
+bayes
+```
+독립성이 낮은 변수 쌍의 나이브 베이지안 확률
+
+나이브 베이지안 정리 : p(y|x) = p(x1|y)*p(x2|y)*p(y)/p(x1,x2)
+```{r}
+# 분자 - py
+nrow(x)
+x
+summary(x)
+result<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,4]=="setosa"){
+    result = result+1
+  }
+}
+p_y<-result/nrow(x)
+p_y
+```
+
+```{r}
+# 분자 - p(x1,y)
+x1<-0
+y<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,4]=="setosa"){
+    y = y+1
+    if(x[i,1]<5.35){
+      x1 = x1+1
+    }
+  }
+}
+x1
+p_x1_y<-x1/y
+p_x1_y
+```
+
+```{r}
+# 분자 - p(x2,y)
+x2<-0
+y<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,4]=="setosa"){
+    y = y+1
+    if(x[i,2]>2.7){
+      x2 = x2+1
+    }
+  }
+}
+x2
+p_x2_y<-x2/y
+p_x2_y
+```
+
+```{r}
+#전체 분자
+np_up<-p_y*p_x1_y*p_x2_y
+np_up
+```
+
+```{r}
+# 분모
+x1_x2<-0
+for(i in 1:114){ #최대 깊이를 1~20
+  if(x[i,1]<5.35){
+    if(x[i,2]>2.7){
+      x1_x2 = x1_x2+1
+    }
+  }
+}
+np_down<-x1_x2/nrow(x)
+np_down
+```
+
+```{r}
+#나이브 베이지안 확률=> 1.005093
+np_result<-np_up/np_down
+np_result
+```
+
+결론 
+
+일반 모델과 나이브 베이지안 모델(독립성 검증x)를 하였을때도 나이브 베이지안 모델의 정확도가 더 높음
+베이지안 모델과 나이브 베이지안 모델 검증에서는
+현재 아이리스 데이터의 예측변수가 단순하여 독립성에 관련 없이 둘다 예측 확률이 100%로 측정됨
+하지만 독립성이 작은 쌍에서의 나이브 베이지안 모델의 경우 정확도가 1.005093으로 과적합이 된것을
+볼 수 있음 
+따라서 나이브 베이지안 모델이 일반 모델에 비해서 정확도가 훨씬 높으나 그렇게 되기 위해서는 
+예측변수들 간의 독립성을 잘 지켜 주어야 한다는 것을 알 수 있음

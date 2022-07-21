@@ -1,0 +1,508 @@
+---
+title: "hw12"
+output: html_document
+date: '2022-05-28'
+---
+라이브러리 포함
+
+```{r setup, include=FALSE}
+library(arules)
+library(ggplot2)
+library(arulesViz)
+library(shinythemes)
+library(pmml)
+library(caret)
+library(rpart)
+library(dplyr)
+library(rattle)
+library(philentropy)
+library(NbClust)
+library(fpc)
+library(dbscan)
+library(gridExtra)
+library(amap)
+```
+
+
+## 1-A 데이터 셋
+
+출처: <br>
+설명: 2020년 일별 미세먼지(㎍/㎥)	오존(ppm)	이산화질소농도(ppm)	일산화탄소농도(ppm)	아황산가스농도(ppm)	초미세먼지(㎍/㎥) 의 평균수치를 지역별로 나타낸 자료<br>
+목적: 군집화를 통하여 일정기간의 대기오염 정도를 알아본다<br>
+
+
+## 2-A 전처리
+데이터 불러오기, 결측치 제거,이상치 제거
+
+
+```{r cars}
+air = read.csv("air2.csv")
+sum(is.na(air))
+head(air)
+summary(air)
+air <- na.omit(air)
+
+
+```
+
+
+
+이상치 확인
+
+
+
+
+```{r}
+view_plot<-function(data){ 
+    p1<-ggplot(data=data, aes(y=미세먼지.....))+geom_boxplot(outlier.color = 'red')
+    p2<-ggplot(data=data, aes(y=오존.ppm.))+geom_boxplot(outlier.color = 'red')
+    
+    p3<-ggplot(data=data, aes(y=일산화탄소농도.ppm.))+geom_boxplot(outlier.color = 'red')
+    
+    p4<-ggplot(data=data, aes(y=초미세먼지.....))+geom_boxplot(outlier.color = 'red')
+   
+    return(grid.arrange(p1,p2,p3,p4,nrow=3))
+}
+view_plot(air)
+
+```
+
+
+이상치 제거
+
+
+```{r}
+for(i in 2:5){
+    air[,i] <- ifelse(air[,i] < boxplot(air[,i])$stats[1] | air[,i] > boxplot(air[,i])$stats[5],NA, air[,i])
+}
+sum(is.na(air))#결측치 개수
+air<-na.omit(air)#결측치포함하는 행 제거
+sum(is.na(air))#제거후 결측치 개수 = 0
+
+
+
+
+
+```
+
+
+
+
+데이터 분리<br>
+측정치 데이터 : x <br>
+측정소명 : y <br>
+
+```{r pressure, echo=FALSE}
+x=air[,-1]
+y=air[,1]
+```
+
+
+9100개의 데이터를 전부 hclust에 넣었을때 오랜시간 기다려도 결과가 도출이 안되어 데이터를 축소하기로 결정
+
+```{r}
+# hc <- hclust(dist(x, method = "euclidean", diag = TRUE),
+#              method = "centroid")
+```
+
+
+2020년 11월에서 12월사이의 결과만으로 축소<br>
+x3: 11월에서 12월 사이의 각 구별 측정치<br>
+y3: 11월에서 12월 측정한 측정 구역역<br>
+
+
+```{r}
+x3 <-x[1:1526,]
+head(x3)
+y3 <-y[1:1526]
+head(y3)
+```
+
+
+## 3 k-means 군집화 적용
+
+변동성을 없애기 위해 데이터를 스케일링<br>
+
+euclidean을 기준으로 한 거리와 scale<br>
+
+```{r}
+
+air_dist<- dist(x3, method = "euclidean")# euclidean기준으로 distance 구하기
+air_scaled <- scale(x3, center = FALSE, apply(x3, MARGIN = 2, FUN = max)) # x3에 있는 데이터를 최댓값이 1이 되도록 스케일링(변동성이 클수록 결과에 큰 영향을 미치기에 표준화 작업을 거치는것!)
+head(air_scaled)
+air_scaled_dist <- dist(air_scaled, method = "euclidean")
+head(air_scaled_dist)# scale 된 데이터를 euclidean기준으로 distance 구하기
+
+
+```
+
+
+## 3-A 최적의 K군집
+
+nbclust와 wssplot을 이용하여 몇개의 군집을 만들었을때 가장 효율적인지 알아본다<br>
+
+### 3-A-I
+According to the majority rule, the best number of clusters is  2   에 따라 군집을 2개 생성하기로 결정<br>
+
+wssplot에서도 2 지점이서 큰 변동이 있는것으로 보임!<br>
+
+
+```{r}
+nc <- NbClust(x3, min.nc=2, max.nc=15, method="kmeans")#kmeans # nbclust를 사용하여 군집 별 criteria 수치를 알아봄
+par(mfrow=c(1,1))
+barplot(table(nc$Best.n[1,]), # 군집이 3인경우 criteria가 최대!
+        xlab="Numer of Clusters", ylab="Number of Criteria",
+        main="Number of Clusters Chosen")
+
+wssplot <- function(data, nc=20, seed=1234){
+  wss <- (nrow(data)-1)*sum(apply(data,2,var)) # K = 1, Total SS 
+  for (i in 2:nc){
+    set.seed(seed)
+    wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+  plot(1:nc, wss, type="b", xlab="Number of Clusters",
+       ylab="Within groups sum of squares")
+}
+
+wssplot(x3)
+```
+
+
+
+
+2개의 군집으로 만든 plot과 table<br>
+
+
+
+```{r}
+air.kmeans <- kmeans(x3, centers = 2, nstart = 25)
+head(air.kmeans)
+plot(x3, pch = air.kmeans$cluster, col = air.kmeans$cluster)
+table(air.kmeans$cluster,y3)
+
+```
+
+## 3-A-II
+
+euclidean을 기준으로한 dendrogram<br>
+
+
+
+```{r}
+hc <- hclust(dist(x3, method = "euclidean", diag = TRUE), 
+             method = "centroid")
+
+hc
+plot(hc)
+
+clus<-cutree(hc, k = 2)  
+table(clus)
+```
+
+
+절단선이 36 부터 2개의 분할이 생기며 분할이 적으면서 거리가 긴 절단이 좋은 절단임<br>
+
+
+
+
+```{r}
+plot.new() # or frame()
+
+plot(hc)
+#군집간 네모박스
+rect.hclust(hc, k = 2, border = 3:5)
+
+abline(h = 36, col="red")
+
+```
+
+
+## 3-B-III 거리 척도에 대한 척도 선택
+
+유클리드거리와 맨하튼 거리 비교<br>
+
+withinss  는 응집도를 의미하며 수치가 작을수록 잘 응집됨을 의미한다<br>
+유클리드거리와 맨하튼 거리를 비교하였을때 유클리드 거리가 더 작음으로 유클리드 거리의 성능이 더 좋다고 할 수 있다<br>
+
+=>거리 척도 유클리드 선택<br>
+
+
+```{r}
+euclidean_kmeans <- Kmeans(x3, centers = 2, nstart = 25,method = "euclidean")
+
+manhattan_kmeans <- Kmeans(x3, centers = 2, nstart = 25,method = "manhattan")
+
+
+euclidean_kmeans$withinss
+manhattan_kmeans$withinss
+
+
+
+
+```
+
+
+
+## 3-B-i-1,2
+
+
+
+
+오존과 일산화탄소는 제외하고 11~12월의 미세먼지 대기 상태를 분석하기로 결정<br>
+눈으로 보았을때 군집화가 잘되어 보이는 초미세먼지와 미세먼지를 선택<br>
+
+
+
+
+
+```{r}
+head(x3)
+x0<-x3[,-c(2,3)]
+head(x0)
+y0<-y3
+```
+
+
+euclidean을 활용한 변수들간의 거리와 scale<br>
+이번에는 scale된 군집을 살펴볼 예정<br>
+
+
+
+```{r}
+air_dist<- dist(x0, method = "euclidean")
+air_scaled <- scale(x0, center = FALSE, apply(x0, MARGIN = 2, FUN = max))
+head(air_scaled)
+air_scaled_dist <- dist(air_scaled, method = "euclidean")
+head(air_scaled_dist)
+head(x0)
+nc <- NbClust(air_scaled, min.nc=2, max.nc=15, method="kmeans")#kmeans
+par(mfrow=c(1,1))
+barplot(table(nc$Best.n[1,]), # 군집이 2인경우 criteria가 최대!
+        xlab="Numer of Clusters", ylab="Number of Criteria",
+        main="Number of Clusters Chosen")
+```
+
+
+
+
+scale된 미세먼지와 초미세먼지를 바탕으로 kmeans진행<br>
+
+
+
+
+
+```{r}
+air1.kmeans <- kmeans(air_scaled, centers = 2, nstart = 25)
+head(air1.kmeans)
+plot(air_scaled, pch = air1.kmeans$cluster, col = air1.kmeans$cluster)
+table(air1.kmeans$cluster,y0)
+aa<-air1.kmeans$centers
+head(air1.kmeans$cluster)
+plot(air_scaled, col=air1.kmeans$cluster)
+points(air1.kmeans$centers,col=1:3, pch=8,cex=1.5)
+```
+
+
+##3-B-II
+초기중심 변경을 위해 2번의 kmeans 군집화!
+
+
+```{r}
+air11.kmeans <- kmeans(air_scaled, centers = 2, nstart = 25)
+head(air11.kmeans)
+#plot(air_scaled, pch = air11.kmeans$cluster, col = air1.kmeans$cluster)
+table(air11.kmeans$cluster,y0)
+aaa<-air11.kmeans$centers
+head(air11.kmeans$cluster)
+
+
+
+air111.kmeans <- kmeans(air_scaled, centers = 2, nstart = 25)
+head(air111.kmeans)
+#plot(air_scaled, pch = air111.kmeans$cluster, col = air1.kmeans$cluster)
+table(air111.kmeans$cluster,y0)
+aaaa<-air111.kmeans$centers
+head(air111.kmeans$cluster)
+
+```
+
+## 3-C
+
+같은 scale된 데이터를 이용하여 3번의 kmeans진행!<br>
+
+3번의 무작위 시작점에도 불구하고 3번 다 같은 결과가 나옴!<br>
+
+=> 군집화가 매우 잘됨
+
+
+
+```{r}
+aa
+aaa
+aaaa
+```
+
+
+
+응집도와 분리도를 이용하여 kmeans데이터의 성능을 측정
+
+
+```{r}
+#응집도: 클러스터 안에 얼마나 데이터가 뭉쳐져 있는가
+air1.kmeans$withinss # 작아야 좋음
+# 분리도: 다른 클러스터간 얼마나 떨어져 있는가 
+air1.kmeans$betweenss # 커야 좋음
+
+aa<-air1.kmeans$centers
+```
+
+
+
+
+
+정확한 수치를 알아보기 위해 2가지 군집의 비율 계산
+
+
+```{r}
+table(air1.kmeans$cluster,y0)
+good<-sum(table(air1.kmeans$cluster,y0)[1,])
+bad<-sum(table(air1.kmeans$cluster,y0)[2,])
+
+good/sum(bad,good)
+bad/sum(bad,good)
+
+```
+
+
+## 3-D  각 군집에 대한 labelling
+
+
+미세먼지와 초미세먼지를 바탕으로한 군집인 만큼 비례적인 특성을 가짐<br>
+
+두가지의 군집이 수치가 큰것과 낮은 것 두 부분으로 나눌 수 있음으로 <br>
+빨간색은 미세먼지가 좋음 검은색은 나쁨으로 표현 할 수 있음<br>
+
+```{r}
+plot(air_scaled, col=air1.kmeans$cluster,, pch = air1.kmeans$cluster)
+points(air1.kmeans$centers,col=1:3, pch=8,cex=1.5)
+table(air1.kmeans$cluster,y0)
+```
+
+
+
+
+kmeans 결과 고찰 <br><br>
+
+
+군집은 두가지로 나누어지며 초미세먼지와 미세먼지는 비례적인 특징을 가진다<br>
+nbclust의 결과로 보았을때, 2가지 군집으로 나누어졌다. <br>
+비례적인 특성으로 보았을때, 2가지 군집은 각각 대기상태가 좋음/나쁨 으로 구분할수 있다.<br>
+빨간색 날짜의 지역의 경우 대기상태가 좋음을 의미한다<br>
+검은색 날짜의 지역의 경우 대기상태가 나쁨을 의미한다<br>
+
+11~12월은 북서풍이 시작이 되는 시기로 미세먼지로인한 대기 상태가 나빠지기 시작하는 시점이라고 할 수 있다<br>
+
+plot 데이터와 각 데이터의 분포를 보았을때, 좋음/나쁨의 비율이 41%/59% 이다.<br>
+즉, 대기 상태가 '좋음'이 아닌경우가 59%에 달하며 일반적으로 알려진 상식과 마찬가지로 서서히 대기 상태가 나빠지고 있음을 의미한다<br>
+ 
+
+
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+## 4-A 다른 군집화와 비교
+
+
+eps : 도달 가능한 거리. 이것은 이웃들의 크기를 정의한다.<br>
+MinPts: 거리내에 있어야만 하는 최소 점들의 개수.<br>
+
+eps의 최적값을 구하기위해 dbscan페키지의 knndistplot을 그려서 elbow포인트를 찾아본다<br>
+
+eps는 3으로 결정<br>
+minpts는 2차원의 데이터셋임으로 4로 결정<br>
+
+```{r}
+
+
+dbscan::kNNdistplot(air_scaled, k=3)
+abline(h = 0.03, lty = 2)
+```
+
+
+dbscan 군집화 실행
+
+```{r}
+
+
+
+
+ds<- dbscan(air_scaled, eps=0.03, MinPts=4)
+head(ds)
+table(ds$cluster, y0)
+plot(ds, air_scaled)  
+
+plot(ds, air_scaled[,-c(2,3)])
+
+```
+
+
+
+factoextra 라이브러리를 사용하여 labelling 시도
+
+
+
+```{r}
+
+library("factoextra")
+fviz_cluster(ds, air_scaled, stand = FALSE, frame = FALSE, geom = "point")
+
+```
+
+
+
+
+dbscan 결과에 대한 고찰<br>
+
+
+dbscan 의 최적의 인자를 사용하여 군집화를 하였을때 5개의 군집이 형성된다. <br>
+1번 군집의 경우 미세먼지와 초미세먼지가 비례적인 군집<br>
+2~4 번 군집의 경우 미세먼지의 비율이 더 높은 군집<br>
+5번 군집의 경우 대기 상태가 나쁜 군집이다<br>
+
+즉 dbscan의 결과로 우리는 북서풍이 시작되는 11~12월에는 미세먼지와 초미세먼지가 높아지며, 미세먼지의 수치가 먼저 높아짐을 알 수 있다<br>
+
+
+
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+
+
+최종 결과 고찰<br>
+
+
+kmeans 군집화와 dbscan군집화를 비교하여 보았는데,<br>
+ 
+kmeans의 경우 대기상태의 구분을 하는데 용이 하였고, dbscan의 경우 대기상태 악화의 특징을 파악하는데 용이 하였다.<br>
+
+다만 이 결과는 scale한 수치와 절대적 근거 없이 비율에 따라서 좋음과 나쁨의 군집을 나누었음으로 <br>
+kmeans 의 작은 수치의 군집은 모두 '대기 상태 좋음'이며 큰 수치의 군집음 '대기 상태 나쁨' 이라고 평가 할 수 없다 <br>
+다만 점점 큰 군집이 많아진다는(11~12월에 점점 미세먼지 수치가 나빠진다는) 결론을 추론할 수 있다 <br>
+
+데이터를 계절 별로 나누어서 각 계절별 대기 상태를 kmeans로 군집화 하여 보고, 대기 상태 변화의 특징을 dbscan으로 군집화하여본다면<br>
+
+정책이나 대처 방식에 유의미한 결론을 도출 할 수 있을것으로 생각한다<br>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,2119 @@
+<?xml version="1.0"?>
+<PMML version="4.4.1" xmlns="http://www.dmg.org/PMML-4_4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.dmg.org/PMML-4_4 http://www.dmg.org/pmml/v4-4/pmml-4-4.xsd">
+ <Header copyright="Copyright (c) 2022 qorgh2akfl" description="Association Rules Model">
+  <Extension name="user" value="qorgh2akfl" extender="SoftwareAG PMML Generator"/>
+  <Application name="SoftwareAG PMML Generator" version="2.5.2"/>
+  <Timestamp>2022-05-21 20:19:33</Timestamp>
+ </Header>
+ <DataDictionary numberOfFields="2">
+  <DataField name="transaction" optype="categorical" dataType="string"/>
+  <DataField name="item" optype="categorical" dataType="string"/>
+ </DataDictionary>
+ <AssociationModel functionName="associationRules" numberOfTransactions="5807" numberOfItems="18" minimumSupport="0.001" minimumConfidence="0.08" numberOfItemsets="366" numberOfRules="365">
+  <MiningSchema>
+   <MiningField name="transaction" usageType="group"/>
+   <MiningField name="item" usageType="active"/>
+  </MiningSchema>
+  <Item id="1" value="X=[1,1.94e+03)"/>
+  <Item id="2" value="X=[1.94e+03,3.87e+03)"/>
+  <Item id="3" value="X=[3.87e+03,5.81e+03]"/>
+  <Item id="4" value="Age=[19,44)"/>
+  <Item id="5" value="Age=[44,62)"/>
+  <Item id="6" value="Age=[62,80]"/>
+  <Item id="7" value="Sex=female"/>
+  <Item id="8" value="Sex=male"/>
+  <Item id="9" value="Smoke=[0,50]"/>
+  <Item id="10" value="Drink=high_risk"/>
+  <Item id="11" value="Drink=low_risk"/>
+  <Item id="12" value="Walking=No"/>
+  <Item id="13" value="Walking=Yes"/>
+  <Item id="14" value="Exercise=No"/>
+  <Item id="15" value="Exercise=Yes"/>
+  <Item id="16" value="High_blood_pressure=danger"/>
+  <Item id="17" value="High_blood_pressure=diagnosed"/>
+  <Item id="18" value="High_blood_pressure=normal"/>
+  <Itemset id="1" numberOfItems="0"/>
+  <Itemset id="2" numberOfItems="1">
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="3" numberOfItems="1">
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="4" numberOfItems="1">
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="5" numberOfItems="1">
+   <ItemRef itemRef="5"/>
+  </Itemset>
+  <Itemset id="6" numberOfItems="1">
+   <ItemRef itemRef="4"/>
+  </Itemset>
+  <Itemset id="7" numberOfItems="1">
+   <ItemRef itemRef="2"/>
+  </Itemset>
+  <Itemset id="8" numberOfItems="1">
+   <ItemRef itemRef="1"/>
+  </Itemset>
+  <Itemset id="9" numberOfItems="1">
+   <ItemRef itemRef="3"/>
+  </Itemset>
+  <Itemset id="10" numberOfItems="1">
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="11" numberOfItems="1">
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="12" numberOfItems="1">
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="13" numberOfItems="1">
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="14" numberOfItems="1">
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="15" numberOfItems="2">
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="16" numberOfItems="2">
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="17" numberOfItems="2">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="18" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="19" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="20" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="21" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="22" numberOfItems="2">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="23" numberOfItems="2">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="24" numberOfItems="2">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="25" numberOfItems="2">
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="26" numberOfItems="2">
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="27" numberOfItems="2">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="28" numberOfItems="2">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="29" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="30" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="31" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="32" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="33" numberOfItems="2">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="34" numberOfItems="2">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="35" numberOfItems="2">
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="36" numberOfItems="2">
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="37" numberOfItems="2">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="38" numberOfItems="2">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="39" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="40" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="41" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="42" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="43" numberOfItems="2">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="44" numberOfItems="2">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="45" numberOfItems="2">
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="46" numberOfItems="2">
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="47" numberOfItems="2">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="48" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+  </Itemset>
+  <Itemset id="49" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+  </Itemset>
+  <Itemset id="50" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+  </Itemset>
+  <Itemset id="51" numberOfItems="2">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="52" numberOfItems="2">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="53" numberOfItems="2">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="54" numberOfItems="2">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="55" numberOfItems="2">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="56" numberOfItems="2">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="57" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+  </Itemset>
+  <Itemset id="58" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+  </Itemset>
+  <Itemset id="59" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+  </Itemset>
+  <Itemset id="60" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="61" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="62" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="63" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="7"/>
+  </Itemset>
+  <Itemset id="64" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="65" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="66" numberOfItems="2">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="67" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="68" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="69" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="70" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="71" numberOfItems="2">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="72" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="73" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="74" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="75" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="76" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="77" numberOfItems="2">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="78" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="79" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="80" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="81" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="82" numberOfItems="2">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="83" numberOfItems="2">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="84" numberOfItems="2">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="85" numberOfItems="2">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="86" numberOfItems="2">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="87" numberOfItems="2">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="88" numberOfItems="2">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="89" numberOfItems="2">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="90" numberOfItems="2">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="91" numberOfItems="2">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="92" numberOfItems="2">
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="93" numberOfItems="2">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="94" numberOfItems="2">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="95" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="96" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="97" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="98" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="99" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="100" numberOfItems="3">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="101" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="102" numberOfItems="3">
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="103" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="104" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="105" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="106" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="107" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="108" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="109" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="110" numberOfItems="3">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="111" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="112" numberOfItems="3">
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="113" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="114" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="115" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="116" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="117" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="118" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="119" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="120" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="121" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="122" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="123" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="124" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="125" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="126" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="127" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="128" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="129" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="130" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="131" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="132" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="133" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="134" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="135" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="136" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="137" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="138" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="139" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="140" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="141" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="142" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="143" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="144" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="145" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="146" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="147" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="148" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="149" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="150" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="151" numberOfItems="3">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="152" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="153" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="154" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="155" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="156" numberOfItems="3">
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="157" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="15"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="158" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="15"/>
+  </Itemset>
+  <Itemset id="159" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="160" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="161" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="162" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="163" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="164" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="165" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="166" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="167" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="168" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="169" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="170" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="171" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="172" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="7"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="173" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="174" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="175" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="176" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="177" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="178" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="179" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="180" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="181" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="182" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="183" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="184" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="185" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="186" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="187" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="188" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="189" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="190" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="191" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="192" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="193" numberOfItems="3">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="194" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="195" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="196" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="197" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="198" numberOfItems="3">
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="199" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="200" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="16"/>
+  </Itemset>
+  <Itemset id="201" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="202" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="203" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="204" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="205" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="206" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="7"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="207" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="208" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="209" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="210" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="211" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="212" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="213" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="214" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="215" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="7"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="216" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="217" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="218" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="219" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="220" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="221" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="222" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="223" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="224" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="225" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="226" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="227" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="228" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="229" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="230" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="231" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="232" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="233" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="234" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="235" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="236" numberOfItems="3">
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="237" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="238" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="239" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="240" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="241" numberOfItems="3">
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="242" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="243" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="17"/>
+  </Itemset>
+  <Itemset id="244" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="245" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="246" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="247" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="248" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="249" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="250" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="251" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="252" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="253" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="254" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="255" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="256" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="257" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="258" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="259" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="260" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="261" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="262" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="263" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="264" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="265" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="266" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="267" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="268" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="269" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="270" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="271" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="272" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="273" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="274" numberOfItems="3">
+   <ItemRef itemRef="5"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="275" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="276" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="277" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="7"/>
+  </Itemset>
+  <Itemset id="278" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="279" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="280" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="281" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="282" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="283" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="284" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="7"/>
+  </Itemset>
+  <Itemset id="285" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="286" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="287" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="288" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="289" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="290" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="291" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="292" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="293" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="294" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="295" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="296" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="7"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="297" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="298" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="299" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="300" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="301" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="302" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="303" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="304" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="305" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="306" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="7"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="307" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="7"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="308" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="309" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="310" numberOfItems="3">
+   <ItemRef itemRef="4"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="311" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="312" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="313" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="314" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="315" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="316" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="317" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="318" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="319" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="320" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="321" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="322" numberOfItems="3">
+   <ItemRef itemRef="2"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="323" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="324" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="325" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="326" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="327" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="328" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="329" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="330" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="331" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="332" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="333" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="334" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="335" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="336" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="337" numberOfItems="3">
+   <ItemRef itemRef="1"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="338" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+  </Itemset>
+  <Itemset id="339" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="340" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="341" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="342" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="343" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="344" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="345" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="346" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="347" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="348" numberOfItems="3">
+   <ItemRef itemRef="3"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="349" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="350" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="351" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="352" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="353" numberOfItems="3">
+   <ItemRef itemRef="6"/>
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+  </Itemset>
+  <Itemset id="354" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="355" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="356" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+  </Itemset>
+  <Itemset id="357" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="358" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="13"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="359" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="360" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="14"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="361" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="18"/>
+  </Itemset>
+  <Itemset id="362" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="363" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+  </Itemset>
+  <Itemset id="364" numberOfItems="3">
+   <ItemRef itemRef="8"/>
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="365" numberOfItems="3">
+   <ItemRef itemRef="9"/>
+   <ItemRef itemRef="12"/>
+   <ItemRef itemRef="14"/>
+  </Itemset>
+  <Itemset id="366" numberOfItems="1">
+   <ItemRef itemRef="10"/>
+  </Itemset>
+  <AssociationRule support="0.111245049078698" confidence="0.111245049078698" lift="1" antecedent="1" consequent="366"/>
+  <AssociationRule support="0.0260030997072499" confidence="0.123064384678077" lift="1.10624594709844" antecedent="2" consequent="366"/>
+  <AssociationRule support="0.0340967797485793" confidence="0.130348913759052" lift="1.17172777430157" antecedent="3" consequent="366"/>
+  <AssociationRule support="0.0411572240399518" confidence="0.144410876132931" lift="1.29813306146119" antecedent="4" consequent="366"/>
+  <AssociationRule support="0.0475288444980196" confidence="0.146730462519936" lift="1.31898420410723" antecedent="5" consequent="366"/>
+  <AssociationRule support="0.0442569312898226" confidence="0.135691657866948" lift="1.21975457776063" antecedent="6" consequent="366"/>
+  <AssociationRule support="0.0384019287067333" confidence="0.115245478036176" lift="1.0359605123159" antecedent="7" consequent="366"/>
+  <AssociationRule support="0.0394351644566902" confidence="0.118285123966942" lift="1.06328438835299" antecedent="8" consequent="366"/>
+  <AssociationRule support="0.0334079559152747" confidence="0.100206611570248" lift="0.900773673975897" antecedent="9" consequent="366"/>
+  <AssociationRule support="0.0399517823316687" confidence="0.110318592486923" lift="0.991671929677344" antecedent="10" consequent="366"/>
+  <AssociationRule support="0.0859307732047529" confidence="0.192070823710547" lift="1.72655615059929" antecedent="11" consequent="366"/>
+  <AssociationRule support="0.0712932667470294" confidence="0.111771058315335" lift="1.00472838333924" antecedent="12" consequent="366"/>
+  <AssociationRule support="0.0852419493714483" confidence="0.108078602620087" lift="0.971536293211838" antecedent="13" consequent="366"/>
+  <AssociationRule support="0.111245049078698" confidence="0.111245049078698" lift="1" antecedent="14" consequent="366"/>
+  <AssociationRule support="0.00654382641639401" confidence="0.109510086455331" lift="0.984404136294287" antecedent="15" consequent="366"/>
+  <AssociationRule support="0.00895470983296022" confidence="0.185714285714286" lift="1.66941618752764" antecedent="16" consequent="366"/>
+  <AssociationRule support="0.0094713277079387" confidence="0.151098901098901" lift="1.35825281529616" antecedent="17" consequent="366"/>
+  <AssociationRule support="0.0111933872912003" confidence="0.13265306122449" lift="1.19244013394832" antecedent="18" consequent="366"/>
+  <AssociationRule support="0.00843809195798175" confidence="0.115294117647059" lift="1.03639774175924" antecedent="19" consequent="366"/>
+  <AssociationRule support="0.00843809195798175" confidence="0.110609480812641" lift="0.994286772568122" antecedent="20" consequent="366"/>
+  <AssociationRule support="0.00912691579128638" confidence="0.147632311977716" lift="1.3270910768647" antecedent="21" consequent="366"/>
+  <AssociationRule support="0.0053383847081109" confidence="0.0831099195710456" lift="0.747088704255513" antecedent="22" consequent="366"/>
+  <AssociationRule support="0.0144653004993973" confidence="0.127853881278539" lift="1.14929951793262" antecedent="23" consequent="366"/>
+  <AssociationRule support="0.0218701567074221" confidence="0.165364583333333" lift="1.48648937371001" antecedent="24" consequent="366"/>
+  <AssociationRule support="0.0105045634578956" confidence="0.101666666666667" lift="0.91389834881321" antecedent="25" consequent="366"/>
+  <AssociationRule support="0.0115377992078526" confidence="0.117543859649123" lift="1.05662104176851" antecedent="26" consequent="366"/>
+  <AssociationRule support="0.0260030997072499" confidence="0.123064384678077" lift="1.10624594709844" antecedent="27" consequent="366"/>
+  <AssociationRule support="0.0146375064577234" confidence="0.158878504672897" lift="1.42818494835219" antecedent="28" consequent="366"/>
+  <AssociationRule support="0.0156707422076804" confidence="0.175" lift="1.57310371517028" antecedent="29" consequent="366"/>
+  <AssociationRule support="0.0101601515412433" confidence="0.118951612903226" lift="1.06927556676321" antecedent="30" consequent="366"/>
+  <AssociationRule support="0.0115377992078526" confidence="0.139583333333333" lift="1.2547374871001" antecedent="31" consequent="366"/>
+  <AssociationRule support="0.0123988289994834" confidence="0.132596685082873" lift="1.19193335956075" antecedent="32" consequent="366"/>
+  <AssociationRule support="0.013087652832788" confidence="0.130360205831904" lift="1.17182928059732" antecedent="33" consequent="366"/>
+  <AssociationRule support="0.0284139831238161" confidence="0.20048602673147" lift="1.80220179137716" antecedent="34" consequent="366"/>
+  <AssociationRule support="0.0210091269157913" confidence="0.13034188034188" lift="1.17166454976053" antecedent="35" consequent="366"/>
+  <AssociationRule support="0.0275529533321853" confidence="0.136518771331058" lift="1.22718963640782" antecedent="36" consequent="366"/>
+  <AssociationRule support="0.0340967797485793" confidence="0.130348913759052" lift="1.17172777430157" antecedent="37" consequent="366"/>
+  <AssociationRule support="0.020664714999139" confidence="0.228136882129278" lift="2.05075986768532" antecedent="38" consequent="366"/>
+  <AssociationRule support="0.0094713277079387" confidence="0.339506172839506" lift="3.05187669609754" antecedent="39" consequent="366"/>
+  <AssociationRule support="0.0165317719993112" confidence="0.173285198555957" lift="1.55768908361368" antecedent="40" consequent="366"/>
+  <AssociationRule support="0.0132598587911142" confidence="0.149805447470817" lift="1.34662574839479" antecedent="41" consequent="366"/>
+  <AssociationRule support="0.0113655932495264" confidence="0.112436115843271" lift="1.01070669458494" antecedent="42" consequent="366"/>
+  <AssociationRule support="0.013087652832788" confidence="0.136690647482014" lift="1.22873465933136" antecedent="43" consequent="366"/>
+  <AssociationRule support="0.0363354572068194" confidence="0.25544794188862" lift="2.29626346524337" antecedent="44" consequent="366"/>
+  <AssociationRule support="0.0280695712071638" confidence="0.148316651501365" lift="1.33324271713379" antecedent="45" consequent="366"/>
+  <AssociationRule support="0.0322025142069916" confidence="0.136" lift="1.22252631578947" antecedent="46" consequent="366"/>
+  <AssociationRule support="0.0411572240399518" confidence="0.144410876132931" lift="1.29813306146119" antecedent="47" consequent="366"/>
+  <AssociationRule support="0.0158429481660065" confidence="0.141538461538462" lift="1.27231245534651" antecedent="48" consequent="366"/>
+  <AssociationRule support="0.0167039779576373" confidence="0.149922720247295" lift="1.34767993262545" antecedent="49" consequent="366"/>
+  <AssociationRule support="0.0149819183743758" confidence="0.148972602739726" lift="1.33913917044828" antecedent="50" consequent="366"/>
+  <AssociationRule support="0.0172205958326158" confidence="0.147710487444609" lift="1.32779380896415" antecedent="51" consequent="366"/>
+  <AssociationRule support="0.0384019287067333" confidence="0.262352941176471" lift="2.35833363686032" antecedent="52" consequent="366"/>
+  <AssociationRule support="0.0122266230411572" confidence="0.0865853658536585" lift="0.778330061164389" antecedent="53" consequent="366"/>
+  <AssociationRule support="0.0303082486654038" confidence="0.146179401993355" lift="1.3140306306121" antecedent="54" consequent="366"/>
+  <AssociationRule support="0.0380575167900809" confidence="0.145682267633487" lift="1.30956180827811" antecedent="55" consequent="366"/>
+  <AssociationRule support="0.0475288444980196" confidence="0.146730462519936" lift="1.31898420410723" antecedent="56" consequent="366"/>
+  <AssociationRule support="0.0161873600826589" confidence="0.136627906976744" lift="1.2281706746346" antecedent="57" consequent="366"/>
+  <AssociationRule support="0.0168761839159635" confidence="0.142857142857143" lift="1.28416629809819" antecedent="58" consequent="366"/>
+  <AssociationRule support="0.0111933872912003" confidence="0.125" lift="1.12364551083591" antecedent="59" consequent="366"/>
+  <AssociationRule support="0.0170483898742897" confidence="0.139633286318759" lift="1.25518652268271" antecedent="60" consequent="366"/>
+  <AssociationRule support="0.0291028069571207" confidence="0.193807339449541" lift="1.74216597551623" antecedent="61" consequent="366"/>
+  <AssociationRule support="0.0191148613742035" confidence="0.0915841584158416" lift="0.823265027741164" antecedent="62" consequent="366"/>
+  <AssociationRule support="0.0151541243327019" confidence="0.086105675146771" lift="0.774018042689318" antecedent="63" consequent="366"/>
+  <AssociationRule support="0.027208541415533" confidence="0.133333333333333" lift="1.19855521155831" antecedent="64" consequent="366"/>
+  <AssociationRule support="0.0330635439986224" confidence="0.136752136752137" lift="1.22928739647006" antecedent="65" consequent="366"/>
+  <AssociationRule support="0.0442569312898226" confidence="0.135691657866948" lift="1.21975457776063" antecedent="66" consequent="366"/>
+  <AssociationRule support="0.0132598587911142" confidence="0.115615615615616" lift="1.03928773975214" antecedent="67" consequent="366"/>
+  <AssociationRule support="0.0291028069571207" confidence="0.193142857142857" lift="1.73619283502875" antecedent="68" consequent="366"/>
+  <AssociationRule support="0.0251420699156191" confidence="0.1150512214342" lift="1.03421430784582" antecedent="69" consequent="366"/>
+  <AssociationRule support="0.0299638367487515" confidence="0.11523178807947" lift="1.03583745104874" antecedent="70" consequent="366"/>
+  <AssociationRule support="0.0384019287067333" confidence="0.115245478036176" lift="1.0359605123159" antecedent="71" consequent="366"/>
+  <AssociationRule support="0.0148097124160496" confidence="0.103739445114596" lift="0.932530894396994" antecedent="72" consequent="366"/>
+  <AssociationRule support="0.029447218873773" confidence="0.201176470588235" lift="1.80840830449827" antecedent="73" consequent="366"/>
+  <AssociationRule support="0.0146375064577234" confidence="0.0902335456475584" lift="0.811124147949492" antecedent="74" consequent="366"/>
+  <AssociationRule support="0.0246254520406406" confidence="0.129177958446251" lift="1.16120186485663" antecedent="75" consequent="366"/>
+  <AssociationRule support="0.0309970724987085" confidence="0.120562625586068" lift="1.08375722411501" antecedent="76" consequent="366"/>
+  <AssociationRule support="0.0394351644566902" confidence="0.118285123966942" lift="1.06328438835299" antecedent="77" consequent="366"/>
+  <AssociationRule support="0.0118822111245049" confidence="0.113486842105263" lift="1.02015184536418" antecedent="78" consequent="366"/>
+  <AssociationRule support="0.0273807473738591" confidence="0.18213058419244" lift="1.63720170651006" antecedent="79" consequent="366"/>
+  <AssociationRule support="0.0215257447907698" confidence="0.0941265060240964" lift="0.846118607557164" antecedent="80" consequent="366"/>
+  <AssociationRule support="0.0242810401239883" confidence="0.0894102726696259" lift="0.80372361206272" antecedent="81" consequent="366"/>
+  <AssociationRule support="0.0334079559152747" confidence="0.100206611570248" lift="0.900773673975897" antecedent="82" consequent="366"/>
+  <AssociationRule support="0.0184260375408989" confidence="0.122146118721461" lift="1.0979915037392" antecedent="83" consequent="366"/>
+  <AssociationRule support="0.0280695712071638" confidence="0.169968717413973" lift="1.52787669043799" antecedent="84" consequent="366"/>
+  <AssociationRule support="0.0137764766660926" confidence="0.0829875518672199" lift="0.745988720886913" antecedent="85" consequent="366"/>
+  <AssociationRule support="0.0254864818322714" confidence="0.102351313969571" lift="0.920052755760526" antecedent="86" consequent="366"/>
+  <AssociationRule support="0.0399517823316687" confidence="0.110318592486923" lift="0.991671929677344" antecedent="87" consequent="366"/>
+  <AssociationRule support="0.0211813328741174" confidence="0.129610115911486" lift="1.16508659922291" antecedent="88" consequent="366"/>
+  <AssociationRule support="0.0578612019975891" confidence="0.205003050640635" lift="1.84280606048013" antecedent="89" consequent="366"/>
+  <AssociationRule support="0.0640606164973308" confidence="0.20327868852459" lift="1.82730548647414" antecedent="90" consequent="366"/>
+  <AssociationRule support="0.0859307732047529" confidence="0.192070823710547" lift="1.72655615059929" antecedent="91" consequent="366"/>
+  <AssociationRule support="0.0597554675391769" confidence="0.110721123165284" lift="0.995290343995053" antecedent="92" consequent="366"/>
+  <AssociationRule support="0.0712932667470294" confidence="0.111771058315335" lift="1.00472838333924" antecedent="93" consequent="366"/>
+  <AssociationRule support="0.0852419493714483" confidence="0.108078602620087" lift="0.971536293211838" antecedent="94" consequent="366"/>
+  <AssociationRule support="0.00292750129154469" confidence="0.147826086956522" lift="1.32883295194508" antecedent="95" consequent="366"/>
+  <AssociationRule support="0.00309970724987085" confidence="0.126760563380282" lift="1.13947150394628" antecedent="96" consequent="366"/>
+  <AssociationRule support="0.00172205958326158" confidence="0.087719298245614" lift="0.788523165498886" antecedent="97" consequent="366"/>
+  <AssociationRule support="0.00223867745824005" confidence="0.1015625" lift="0.91296197755418" antecedent="98" consequent="366"/>
+  <AssociationRule support="0.00258308937489237" confidence="0.142857142857143" lift="1.28416629809819" antecedent="99" consequent="366"/>
+  <AssociationRule support="0.00361632512484932" confidence="0.109947643979058" lift="0.988337412672426" antecedent="100" consequent="366"/>
+  <AssociationRule support="0.00585500258308938" confidence="0.136" lift="1.22252631578947" antecedent="101" consequent="366"/>
+  <AssociationRule support="0.00292750129154469" confidence="0.108974358974359" lift="0.979588394062078" antecedent="102" consequent="366"/>
+  <AssociationRule support="0.00654382641639401" confidence="0.109510086455331" lift="0.984404136294287" antecedent="103" consequent="366"/>
+  <AssociationRule support="0.003271913208197" confidence="0.218390804597701" lift="1.9631507775524" antecedent="104" consequent="366"/>
+  <AssociationRule support="0.0020664714999139" confidence="0.315789473684211" lift="2.83868339579599" antecedent="105" consequent="366"/>
+  <AssociationRule support="0.003271913208197" confidence="0.188118811881188" lift="1.69103086779266" antecedent="106" consequent="366"/>
+  <AssociationRule support="0.00275529533321853" confidence="0.177777777777778" lift="1.59807361541108" antecedent="107" consequent="366"/>
+  <AssociationRule support="0.00292750129154469" confidence="0.191011235955056" lift="1.71703134240095" antecedent="108" consequent="366"/>
+  <AssociationRule support="0.00361632512484932" confidence="0.135483870967742" lift="1.2178867472286" antecedent="109" consequent="366"/>
+  <AssociationRule support="0.00482176683313243" confidence="0.186666666666667" lift="1.67797729618163" antecedent="110" consequent="366"/>
+  <AssociationRule support="0.00809368004132943" confidence="0.241025641025641" lift="2.16661903627848" antecedent="111" consequent="366"/>
+  <AssociationRule support="0.00413294299982779" confidence="0.184615384615385" lift="1.65953798523458" antecedent="112" consequent="366"/>
+  <AssociationRule support="0.00895470983296022" confidence="0.185714285714286" lift="1.66941618752764" antecedent="113" consequent="366"/>
+  <AssociationRule support="0.00275529533321853" confidence="0.128" lift="1.15061300309598" antecedent="114" consequent="366"/>
+  <AssociationRule support="0.00275529533321853" confidence="0.137931034482759" lift="1.23988470161204" antecedent="115" consequent="366"/>
+  <AssociationRule support="0.00396073704150164" confidence="0.186991869918699" lift="1.68090060157568" antecedent="116" consequent="366"/>
+  <AssociationRule support="0.00516617874978474" confidence="0.164835164835165" lift="1.48173034395945" antecedent="117" consequent="366"/>
+  <AssociationRule support="0.00809368004132943" confidence="0.211711711711712" lift="1.90311131565002" antecedent="118" consequent="366"/>
+  <AssociationRule support="0.003271913208197" confidence="0.117283950617284" lift="1.0542846768337" antecedent="119" consequent="366"/>
+  <AssociationRule support="0.00430514895815395" confidence="0.137362637362637" lift="1.23477528663287" antecedent="120" consequent="366"/>
+  <AssociationRule support="0.0094713277079387" confidence="0.151098901098901" lift="1.35825281529616" antecedent="121" consequent="366"/>
+  <AssociationRule support="0.00361632512484932" confidence="0.115384615384615" lift="1.03721124077161" antecedent="122" consequent="366"/>
+  <AssociationRule support="0.00413294299982779" confidence="0.132596685082873" lift="1.19193335956075" antecedent="123" consequent="366"/>
+  <AssociationRule support="0.00344411916652316" confidence="0.15748031496063" lift="1.4156163916043" antecedent="124" consequent="366"/>
+  <AssociationRule support="0.00688823833304632" confidence="0.15625" lift="1.40455688854489" antecedent="125" consequent="366"/>
+  <AssociationRule support="0.0086102979163079" confidence="0.166666666666667" lift="1.49819401444788" antecedent="126" consequent="366"/>
+  <AssociationRule support="0.00602720854141553" confidence="0.112903225806452" lift="1.0149056226905" antecedent="127" consequent="366"/>
+  <AssociationRule support="0.00430514895815395" confidence="0.106837606837607" lift="0.960380778492234" antecedent="128" consequent="366"/>
+  <AssociationRule support="0.0111933872912003" confidence="0.13265306122449" lift="1.19244013394832" antecedent="129" consequent="366"/>
+  <AssociationRule support="0.0020664714999139" confidence="0.101694915254237" lift="0.914152280002099" antecedent="130" consequent="366"/>
+  <AssociationRule support="0.00482176683313243" confidence="0.12962962962963" lift="1.16526201123724" antecedent="131" consequent="366"/>
+  <AssociationRule support="0.00671603237472017" confidence="0.146067415730337" lift="1.31302396771837" antecedent="132" consequent="366"/>
+  <AssociationRule support="0.00344411916652316" confidence="0.0952380952380952" lift="0.856110865398791" antecedent="133" consequent="366"/>
+  <AssociationRule support="0.00361632512484932" confidence="0.100478468899522" lift="0.903217444116906" antecedent="134" consequent="366"/>
+  <AssociationRule support="0.00843809195798175" confidence="0.115294117647059" lift="1.03639774175924" antecedent="135" consequent="366"/>
+  <AssociationRule support="0.00430514895815395" confidence="0.100806451612903" lift="0.906165734545091" antecedent="136" consequent="366"/>
+  <AssociationRule support="0.0074048562080248" confidence="0.165384615384615" lift="1.48666944510598" antecedent="137" consequent="366"/>
+  <AssociationRule support="0.00344411916652316" confidence="0.0888888888888889" lift="0.799036807705538" antecedent="138" consequent="366"/>
+  <AssociationRule support="0.00413294299982779" confidence="0.123076923076923" lift="1.10635865682305" antecedent="139" consequent="366"/>
+  <AssociationRule support="0.00843809195798175" confidence="0.110609480812641" lift="0.994286772568122" antecedent="140" consequent="366"/>
+  <AssociationRule support="0.00172205958326158" confidence="0.0917431192660551" lift="0.824693952907092" antecedent="141" consequent="366"/>
+  <AssociationRule support="0.0053383847081109" confidence="0.160621761658031" lift="1.44385537143682" antecedent="142" consequent="366"/>
+  <AssociationRule support="0.00774926812467711" confidence="0.186721991701245" lift="1.67847462199556" antecedent="143" consequent="366"/>
+  <AssociationRule support="0.00361632512484932" confidence="0.127272727272727" lift="1.14407542921475" antecedent="144" consequent="366"/>
+  <AssociationRule support="0.00378853108317548" confidence="0.132530120481928" lift="1.19133499944049" antecedent="145" consequent="366"/>
+  <AssociationRule support="0.00912691579128638" confidence="0.147632311977716" lift="1.3270910768647" antecedent="146" consequent="366"/>
+  <AssociationRule support="0.00516617874978474" confidence="0.121951219512195" lift="1.09623952276674" antecedent="147" consequent="366"/>
+  <AssociationRule support="0.00292750129154469" confidence="0.11038961038961" lift="0.99231032125769" antecedent="148" consequent="366"/>
+  <AssociationRule support="0.0053383847081109" confidence="0.0831099195710456" lift="0.747088704255513" antecedent="149" consequent="366"/>
+  <AssociationRule support="0.0113655932495264" confidence="0.163366336633663" lift="1.468526806241" antecedent="150" consequent="366"/>
+  <AssociationRule support="0.00602720854141553" confidence="0.110759493670886" lift="0.995635262765999" antecedent="151" consequent="366"/>
+  <AssociationRule support="0.0144653004993973" confidence="0.127853881278539" lift="1.14929951793262" antecedent="152" consequent="366"/>
+  <AssociationRule support="0.00792147408300327" confidence="0.142414860681115" lift="1.28019055104525" antecedent="153" consequent="366"/>
+  <AssociationRule support="0.0105045634578956" confidence="0.167582417582418" lift="1.5064258496921" antecedent="154" consequent="366"/>
+  <AssociationRule support="0.0218701567074221" confidence="0.165364583333333" lift="1.48648937371001" antecedent="155" consequent="366"/>
+  <AssociationRule support="0.00447735491648011" confidence="0.0915492957746479" lift="0.822951641738979" antecedent="156" consequent="366"/>
+  <AssociationRule support="0.0105045634578956" confidence="0.101666666666667" lift="0.91389834881321" antecedent="157" consequent="366"/>
+  <AssociationRule support="0.0115377992078526" confidence="0.117543859649123" lift="1.05662104176851" antecedent="158" consequent="366"/>
+  <AssociationRule support="0.00396073704150164" confidence="0.129943502824859" lift="1.16808346889157" antecedent="159" consequent="366"/>
+  <AssociationRule support="0.00499397279145858" confidence="0.176829268292683" lift="1.58954730801178" antecedent="160" consequent="366"/>
+  <AssociationRule support="0.00568279662476322" confidence="0.170103092783505" lift="1.52908461268392" antecedent="161" consequent="366"/>
+  <AssociationRule support="0.0053383847081109" confidence="0.155778894472362" lift="1.40032204365481" antecedent="162" consequent="366"/>
+  <AssociationRule support="0.0123988289994834" confidence="0.274809160305344" lift="2.47030463450949" antecedent="163" consequent="366"/>
+  <AssociationRule support="0.00929912174961254" confidence="0.160714285714286" lift="1.44468708536046" antecedent="164" consequent="366"/>
+  <AssociationRule support="0.0117100051661788" confidence="0.161904761904762" lift="1.45538847117795" antecedent="165" consequent="366"/>
+  <AssociationRule support="0.0146375064577234" confidence="0.158878504672897" lift="1.42818494835219" antecedent="166" consequent="366"/>
+  <AssociationRule support="0.00482176683313243" confidence="0.148936170212766" lift="1.33881167248534" antecedent="167" consequent="366"/>
+  <AssociationRule support="0.0053383847081109" confidence="0.175141242937853" lift="1.57437337111473" antecedent="168" consequent="366"/>
+  <AssociationRule support="0.00551059066643706" confidence="0.206451612903226" lift="1.85582742434835" antecedent="169" consequent="366"/>
+  <AssociationRule support="0.00619941449974169" confidence="0.173913043478261" lift="1.56333288464127" antecedent="170" consequent="366"/>
+  <AssociationRule support="0.0125710349578095" confidence="0.210374639769452" lift="1.89109215656534" antecedent="171" consequent="366"/>
+  <AssociationRule support="0.00309970724987085" confidence="0.104046242774566" lift="0.935288748903882" antecedent="172" consequent="366"/>
+  <AssociationRule support="0.0094713277079387" confidence="0.175718849840256" lift="1.57956557433803" antecedent="173" consequent="366"/>
+  <AssociationRule support="0.0125710349578095" confidence="0.193121693121693" lift="1.73600258816977" antecedent="174" consequent="366"/>
+  <AssociationRule support="0.0156707422076804" confidence="0.175" lift="1.57310371517028" antecedent="175" consequent="366"/>
+  <AssociationRule support="0.00396073704150164" confidence="0.116161616161616" lift="1.04419582825156" antecedent="176" consequent="366"/>
+  <AssociationRule support="0.0086102979163079" confidence="0.185873605947955" lift="1.67084834325043" antecedent="177" consequent="366"/>
+  <AssociationRule support="0.00619941449974169" confidence="0.120805369127517" lift="1.08593928564008" antecedent="178" consequent="366"/>
+  <AssociationRule support="0.00843809195798175" confidence="0.128272251308901" lift="1.1530603147845" antecedent="179" consequent="366"/>
+  <AssociationRule support="0.0101601515412433" confidence="0.118951612903226" lift="1.06927556676321" antecedent="180" consequent="366"/>
+  <AssociationRule support="0.00464956087480627" confidence="0.129186602870813" lift="1.16127957100745" antecedent="181" consequent="366"/>
+  <AssociationRule support="0.00929912174961254" confidence="0.206106870229008" lift="1.85272847588212" antecedent="182" consequent="366"/>
+  <AssociationRule support="0.00688823833304632" confidence="0.14760147601476" lift="1.32681388733392" antecedent="183" consequent="366"/>
+  <AssociationRule support="0.00929912174961254" confidence="0.153409090909091" lift="1.37901949057135" antecedent="184" consequent="366"/>
+  <AssociationRule support="0.0115377992078526" confidence="0.139583333333333" lift="1.2547374871001" antecedent="185" consequent="366"/>
+  <AssociationRule support="0.00447735491648011" confidence="0.147727272727273" lift="1.32794469462426" antecedent="186" consequent="366"/>
+  <AssociationRule support="0.0105045634578956" confidence="0.208904109589041" lift="1.8778733194792" antecedent="187" consequent="366"/>
+  <AssociationRule support="0.00792147408300327" confidence="0.125340599455041" lift="1.12670721522511" antecedent="188" consequent="366"/>
+  <AssociationRule support="0.00981573962459101" confidence="0.13013698630137" lift="1.16982272360999" antecedent="189" consequent="366"/>
+  <AssociationRule support="0.0123988289994834" confidence="0.132596685082873" lift="1.19193335956075" antecedent="190" consequent="366"/>
+  <AssociationRule support="0.00344411916652316" confidence="0.0934579439252336" lift="0.840108793148346" antecedent="191" consequent="366"/>
+  <AssociationRule support="0.00981573962459101" confidence="0.181528662420382" lift="1.63179093293368" antecedent="192" consequent="366"/>
+  <AssociationRule support="0.0094713277079387" confidence="0.14030612244898" lift="1.26123475706072" antecedent="193" consequent="366"/>
+  <AssociationRule support="0.013087652832788" confidence="0.130360205831904" lift="1.17182928059732" antecedent="194" consequent="366"/>
+  <AssociationRule support="0.0185982434992251" confidence="0.212180746561886" lift="1.90732754688061" antecedent="195" consequent="366"/>
+  <AssociationRule support="0.0225589805407267" confidence="0.228621291448517" lift="2.05511430254108" antecedent="196" consequent="366"/>
+  <AssociationRule support="0.0284139831238161" confidence="0.20048602673147" lift="1.80220179137716" antecedent="197" consequent="366"/>
+  <AssociationRule support="0.0180816256242466" confidence="0.134615384615385" lift="1.21007978090021" antecedent="198" consequent="366"/>
+  <AssociationRule support="0.0210091269157913" confidence="0.13034188034188" lift="1.17166454976053" antecedent="199" consequent="366"/>
+  <AssociationRule support="0.0275529533321853" confidence="0.136518771331058" lift="1.22718963640782" antecedent="200" consequent="366"/>
+  <AssociationRule support="0.00774926812467711" confidence="0.234375" lift="2.10683533281734" antecedent="201" consequent="366"/>
+  <AssociationRule support="0.00688823833304632" confidence="0.23121387283237" lift="2.07841944200863" antecedent="202" consequent="366"/>
+  <AssociationRule support="0.00602720854141553" confidence="0.217391304347826" lift="1.95416610580159" antecedent="203" consequent="366"/>
+  <AssociationRule support="0.00757706216635096" confidence="0.236559139784946" lift="2.12646892373248" antecedent="204" consequent="366"/>
+  <AssociationRule support="0.017392801790942" confidence="0.321656050955414" lift="2.89141902151407" antecedent="205" consequent="366"/>
+  <AssociationRule support="0.003271913208197" confidence="0.089622641509434" lift="0.805632630410655" antecedent="206" consequent="366"/>
+  <AssociationRule support="0.013087652832788" confidence="0.223529411764706" lift="2.00934256055363" antecedent="207" consequent="366"/>
+  <AssociationRule support="0.017392801790942" confidence="0.230068337129841" lift="2.06812203361143" antecedent="208" consequent="366"/>
+  <AssociationRule support="0.020664714999139" confidence="0.228136882129278" lift="2.05075986768532" antecedent="209" consequent="366"/>
+  <AssociationRule support="0.00551059066643706" confidence="0.470588235294118" lift="4.23019486432344" antecedent="210" consequent="366"/>
+  <AssociationRule support="0.00292750129154469" confidence="0.278688524590164" lift="2.50517687661777" antecedent="211" consequent="366"/>
+  <AssociationRule support="0.00103323574995695" confidence="0.181818181818182" lift="1.63439347030678" antecedent="212" consequent="366"/>
+  <AssociationRule support="0.00241088341656621" confidence="0.28" lift="2.51696594427245" antecedent="213" consequent="366"/>
+  <AssociationRule support="0.00826588599965559" confidence="0.380952380952381" lift="3.42444346159516" antecedent="214" consequent="366"/>
+  <AssociationRule support="0.00120544170828311" confidence="0.194444444444444" lift="1.74789301685587" antecedent="215" consequent="366"/>
+  <AssociationRule support="0.00706044429137248" confidence="0.366071428571429" lift="3.2906761388766" antecedent="216" consequent="366"/>
+  <AssociationRule support="0.0074048562080248" confidence="0.346774193548387" lift="3.11721012683511" antecedent="217" consequent="366"/>
+  <AssociationRule support="0.0094713277079387" confidence="0.339506172839506" lift="3.05187669609754" antecedent="218" consequent="366"/>
+  <AssociationRule support="0.00464956087480627" confidence="0.152542372881356" lift="1.37122842000315" antecedent="219" consequent="366"/>
+  <AssociationRule support="0.0142930945410711" confidence="0.28135593220339" lift="2.52915464133914" antecedent="220" consequent="366"/>
+  <AssociationRule support="0.0118822111245049" confidence="0.183023872679045" lift="1.6452316232929" antecedent="221" consequent="366"/>
+  <AssociationRule support="0.0132598587911142" confidence="0.169977924944812" lift="1.52795945844354" antecedent="222" consequent="366"/>
+  <AssociationRule support="0.0165317719993112" confidence="0.173285198555957" lift="1.55768908361368" antecedent="223" consequent="366"/>
+  <AssociationRule support="0.00430514895815395" confidence="0.121359223300971" lift="1.09091797168535" antecedent="224" consequent="366"/>
+  <AssociationRule support="0.0120544170828311" confidence="0.272373540856031" lift="2.44841045162689" antecedent="225" consequent="366"/>
+  <AssociationRule support="0.00895470983296022" confidence="0.168831168831169" lift="1.51765107957058" antecedent="226" consequent="366"/>
+  <AssociationRule support="0.0105045634578956" confidence="0.143867924528302" lift="1.29325238039605" antecedent="227" consequent="366"/>
+  <AssociationRule support="0.0132598587911142" confidence="0.149805447470817" lift="1.34662574839479" antecedent="228" consequent="366"/>
+  <AssociationRule support="0.00413294299982779" confidence="0.138728323699422" lift="1.24705166520518" antecedent="229" consequent="366"/>
+  <AssociationRule support="0.00998794558291717" confidence="0.211678832116788" lift="1.90281575557615" antecedent="230" consequent="366"/>
+  <AssociationRule support="0.00723265024969864" confidence="0.101449275362319" lift="0.911944182707408" antecedent="231" consequent="366"/>
+  <AssociationRule support="0.00843809195798175" confidence="0.0983935742971888" lift="0.884475984433089" antecedent="232" consequent="366"/>
+  <AssociationRule support="0.0113655932495264" confidence="0.112436115843271" lift="1.01070669458494" antecedent="233" consequent="366"/>
+  <AssociationRule support="0.0106767694162218" confidence="0.160621761658031" lift="1.44385537143682" antecedent="234" consequent="366"/>
+  <AssociationRule support="0.0110211813328741" confidence="0.221453287197232" lift="1.99067993615221" antecedent="235" consequent="366"/>
+  <AssociationRule support="0.00826588599965559" confidence="0.118226600985222" lift="1.06275831566746" antecedent="236" consequent="366"/>
+  <AssociationRule support="0.013087652832788" confidence="0.136690647482014" lift="1.22873465933136" antecedent="237" consequent="366"/>
+  <AssociationRule support="0.0253142758739452" confidence="0.273743016759777" lift="2.46072089523842" antecedent="238" consequent="366"/>
+  <AssociationRule support="0.0282417771654899" confidence="0.259904912836767" lift="2.33632790842586" antecedent="239" consequent="366"/>
+  <AssociationRule support="0.0363354572068194" confidence="0.25544794188862" lift="2.29626346524337" antecedent="240" consequent="366"/>
+  <AssociationRule support="0.023936628207336" confidence="0.143446852425181" lift="1.28946729416877" antecedent="241" consequent="366"/>
+  <AssociationRule support="0.0280695712071638" confidence="0.148316651501365" lift="1.33324271713379" antecedent="242" consequent="366"/>
+  <AssociationRule support="0.0322025142069916" confidence="0.136" lift="1.22252631578947" antecedent="243" consequent="366"/>
+  <AssociationRule support="0.00551059066643706" confidence="0.144144144144144" lift="1.29573536384682" antecedent="244" consequent="366"/>
+  <AssociationRule support="0.0122266230411572" confidence="0.243986254295533" lift="2.19323247475876" antecedent="245" consequent="366"/>
+  <AssociationRule support="0.00413294299982779" confidence="0.0854092526690391" lift="0.767757786763329" antecedent="246" consequent="366"/>
+  <AssociationRule support="0.0103323574995695" confidence="0.14018691588785" lift="1.26016318972252" antecedent="247" consequent="366"/>
+  <AssociationRule support="0.013087652832788" confidence="0.144761904761905" lift="1.30128851540616" antecedent="248" consequent="366"/>
+  <AssociationRule support="0.0158429481660065" confidence="0.141538461538462" lift="1.27231245534651" antecedent="249" consequent="366"/>
+  <AssociationRule support="0.00568279662476322" confidence="0.125954198473282" lift="1.13222295748352" antecedent="250" consequent="366"/>
+  <AssociationRule support="0.0129154468744619" confidence="0.265957446808511" lift="2.39073512943811" antecedent="251" consequent="366"/>
+  <AssociationRule support="0.00482176683313243" confidence="0.0903225806451613" lift="0.811924498152402" antecedent="252" consequent="366"/>
+  <AssociationRule support="0.0110211813328741" confidence="0.166233766233766" lift="1.49430260142334" antecedent="253" consequent="366"/>
+  <AssociationRule support="0.0139486826244188" confidence="0.152542372881356" lift="1.37122842000315" antecedent="254" consequent="366"/>
+  <AssociationRule support="0.0167039779576373" confidence="0.149922720247295" lift="1.34767993262545" antecedent="255" consequent="366"/>
+  <AssociationRule support="0.00602720854141553" confidence="0.181347150259067" lift="1.63015929033189" antecedent="256" consequent="366"/>
+  <AssociationRule support="0.0132598587911142" confidence="0.277978339350181" lift="2.49879290496362" antecedent="257" consequent="366"/>
+  <AssociationRule support="0.003271913208197" confidence="0.0829694323144105" lift="0.745825841253532" antecedent="258" consequent="366"/>
+  <AssociationRule support="0.00895470983296022" confidence="0.132992327365729" lift="1.19548985296097" antecedent="259" consequent="366"/>
+  <AssociationRule support="0.0110211813328741" confidence="0.13882863340564" lift="1.24795336561386" antecedent="260" consequent="366"/>
+  <AssociationRule support="0.0149819183743758" confidence="0.148972602739726" lift="1.33913917044828" antecedent="261" consequent="366"/>
+  <AssociationRule support="0.0127432409161357" confidence="0.272058823529412" lift="2.44558140593699" antecedent="262" consequent="366"/>
+  <AssociationRule support="0.00430514895815395" confidence="0.0856164383561644" lift="0.76962021290131" antecedent="263" consequent="366"/>
+  <AssociationRule support="0.0120544170828311" confidence="0.141414141414141" lift="1.27119492134972" antecedent="264" consequent="366"/>
+  <AssociationRule support="0.0172205958326158" confidence="0.147710487444609" lift="1.32779380896415" antecedent="265" consequent="366"/>
+  <AssociationRule support="0.0086102979163079" confidence="0.182481751824818" lift="1.64035840997944" antecedent="266" consequent="366"/>
+  <AssociationRule support="0.0256586877905976" confidence="0.257785467128028" lift="2.31727586317718" antecedent="267" consequent="366"/>
+  <AssociationRule support="0.0303082486654038" confidence="0.280254777070064" lift="2.51925617716077" antecedent="268" consequent="366"/>
+  <AssociationRule support="0.0384019287067333" confidence="0.262352941176471" lift="2.35833363686032" antecedent="269" consequent="366"/>
+  <AssociationRule support="0.00792147408300327" confidence="0.0871212121212121" lift="0.783146871188667" antecedent="270" consequent="366"/>
+  <AssociationRule support="0.0122266230411572" confidence="0.0865853658536585" lift="0.778330061164389" antecedent="271" consequent="366"/>
+  <AssociationRule support="0.0260030997072499" confidence="0.147749510763209" lift="1.32814459597826" antecedent="272" consequent="366"/>
+  <AssociationRule support="0.0303082486654038" confidence="0.146179401993355" lift="1.3140306306121" antecedent="273" consequent="366"/>
+  <AssociationRule support="0.0380575167900809" confidence="0.145682267633487" lift="1.30956180827811" antecedent="274" consequent="366"/>
+  <AssociationRule support="0.00568279662476322" confidence="0.1375" lift="1.2360100619195" antecedent="275" consequent="366"/>
+  <AssociationRule support="0.0106767694162218" confidence="0.19496855345912" lift="1.75260431878809" antecedent="276" consequent="366"/>
+  <AssociationRule support="0.00551059066643706" confidence="0.0864864864864865" lift="0.777441218308091" antecedent="277" consequent="366"/>
+  <AssociationRule support="0.0105045634578956" confidence="0.136160714285714" lift="1.22397100287483" antecedent="278" consequent="366"/>
+  <AssociationRule support="0.0125710349578095" confidence="0.144268774703557" lift="1.2968556883956" antecedent="279" consequent="366"/>
+  <AssociationRule support="0.0161873600826589" confidence="0.136627906976744" lift="1.2281706746346" antecedent="280" consequent="366"/>
+  <AssociationRule support="0.00723265024969864" confidence="0.144329896907216" lift="1.29740512591363" antecedent="281" consequent="366"/>
+  <AssociationRule support="0.0110211813328741" confidence="0.205787781350482" lift="1.84986013359482" antecedent="282" consequent="366"/>
+  <AssociationRule support="0.0086102979163079" confidence="0.111607142857143" lift="1.00325492038921" antecedent="283" consequent="366"/>
+  <AssociationRule support="0.00585500258308938" confidence="0.0906666666666667" lift="0.815017543859649" antecedent="284" consequent="366"/>
+  <AssociationRule support="0.00964353366626485" confidence="0.141772151898734" lift="1.27441313634048" antecedent="285" consequent="366"/>
+  <AssociationRule support="0.0127432409161357" confidence="0.146534653465347" lift="1.31722404438586" antecedent="286" consequent="366"/>
+  <AssociationRule support="0.0168761839159635" confidence="0.142857142857143" lift="1.28416629809819" antecedent="287" consequent="366"/>
+  <AssociationRule support="0.00413294299982779" confidence="0.134831460674157" lift="1.21202212404773" antecedent="288" consequent="366"/>
+  <AssociationRule support="0.0074048562080248" confidence="0.176954732510288" lift="1.59067512645084" antecedent="289" consequent="366"/>
+  <AssociationRule support="0.00464956087480627" confidence="0.0813253012048193" lift="0.731046476929389" antecedent="290" consequent="366"/>
+  <AssociationRule support="0.00706044429137248" confidence="0.119883040935673" lift="1.07764832618181" antecedent="291" consequent="366"/>
+  <AssociationRule support="0.00774926812467711" confidence="0.114503816793893" lift="1.02929359771229" antecedent="292" consequent="366"/>
+  <AssociationRule support="0.0111933872912003" confidence="0.125" lift="1.12364551083591" antecedent="293" consequent="366"/>
+  <AssociationRule support="0.00998794558291717" confidence="0.162011173184358" lift="1.4563450196309" antecedent="294" consequent="366"/>
+  <AssociationRule support="0.00843809195798175" confidence="0.108407079646018" lift="0.974489027096633" antecedent="295" consequent="366"/>
+  <AssociationRule support="0.00706044429137248" confidence="0.116809116809117" lift="1.05001631781818" antecedent="296" consequent="366"/>
+  <AssociationRule support="0.0101601515412433" confidence="0.130242825607064" lift="1.1707741304957" antecedent="297" consequent="366"/>
+  <AssociationRule support="0.0170483898742897" confidence="0.139633286318759" lift="1.25518652268271" antecedent="298" consequent="366"/>
+  <AssociationRule support="0.00826588599965559" confidence="0.120300751879699" lift="1.08140319839847" antecedent="299" consequent="366"/>
+  <AssociationRule support="0.0191148613742035" confidence="0.215953307392996" lift="1.94123971521847" antecedent="300" consequent="366"/>
+  <AssociationRule support="0.0204925090408128" confidence="0.208041958041958" lift="1.87012329775488" antecedent="301" consequent="366"/>
+  <AssociationRule support="0.0291028069571207" confidence="0.193807339449541" lift="1.74216597551623" antecedent="302" consequent="366"/>
+  <AssociationRule support="0.0106767694162218" confidence="0.0815789473684211" lift="0.733326543913964" antecedent="303" consequent="366"/>
+  <AssociationRule support="0.013087652832788" confidence="0.0842572062084257" lift="0.757401852093387" antecedent="304" consequent="366"/>
+  <AssociationRule support="0.0191148613742035" confidence="0.0915841584158416" lift="0.823265027741164" antecedent="305" consequent="366"/>
+  <AssociationRule support="0.0125710349578095" confidence="0.0877403846153846" lift="0.788712714336747" antecedent="306" consequent="366"/>
+  <AssociationRule support="0.0151541243327019" confidence="0.086105675146771" lift="0.774018042689318" antecedent="307" consequent="366"/>
+  <AssociationRule support="0.022903392457379" confidence="0.139852786540484" lift="1.25715964619286" antecedent="308" consequent="366"/>
+  <AssociationRule support="0.027208541415533" confidence="0.133333333333333" lift="1.19855521155831" antecedent="309" consequent="366"/>
+  <AssociationRule support="0.0330635439986224" confidence="0.136752136752137" lift="1.22928739647006" antecedent="310" consequent="366"/>
+  <AssociationRule support="0.00619941449974169" confidence="0.135338345864662" lift="1.21657859819828" antecedent="311" consequent="366"/>
+  <AssociationRule support="0.0086102979163079" confidence="0.167224080267559" lift="1.50320469677045" antecedent="312" consequent="366"/>
+  <AssociationRule support="0.00464956087480627" confidence="0.0927835051546392" lift="0.834046152373049" antecedent="313" consequent="366"/>
+  <AssociationRule support="0.00843809195798175" confidence="0.108888888888889" lift="0.978820089439285" antecedent="314" consequent="366"/>
+  <AssociationRule support="0.0132598587911142" confidence="0.115615615615616" lift="1.03928773975214" antecedent="315" consequent="366"/>
+  <AssociationRule support="0.00619941449974169" confidence="0.115755627009646" lift="1.04054632514708" antecedent="316" consequent="366"/>
+  <AssociationRule support="0.0204925090408128" confidence="0.206597222222222" lift="1.85713633040936" antecedent="317" consequent="366"/>
+  <AssociationRule support="0.0223867745824005" confidence="0.213815789473684" lift="1.92202521590354" antecedent="318" consequent="366"/>
+  <AssociationRule support="0.0291028069571207" confidence="0.193142857142857" lift="1.73619283502875" antecedent="319" consequent="366"/>
+  <AssociationRule support="0.0215257447907698" confidence="0.117924528301887" lift="1.06004293475086" antecedent="320" consequent="366"/>
+  <AssociationRule support="0.0251420699156191" confidence="0.1150512214342" lift="1.03421430784582" antecedent="321" consequent="366"/>
+  <AssociationRule support="0.0299638367487515" confidence="0.11523178807947" lift="1.03583745104874" antecedent="322" consequent="366"/>
+  <AssociationRule support="0.00551059066643706" confidence="0.124513618677043" lift="1.11927334931515" antecedent="323" consequent="366"/>
+  <AssociationRule support="0.0103323574995695" confidence="0.169491525423729" lift="1.52358713333683" antecedent="324" consequent="366"/>
+  <AssociationRule support="0.00585500258308938" confidence="0.0821256038647343" lift="0.738240528858378" antecedent="325" consequent="366"/>
+  <AssociationRule support="0.0105045634578956" confidence="0.104991394148021" lift="0.943784869686619" antecedent="326" consequent="366"/>
+  <AssociationRule support="0.0148097124160496" confidence="0.103739445114596" lift="0.932530894396994" antecedent="327" consequent="366"/>
+  <AssociationRule support="0.00809368004132943" confidence="0.141993957703928" lift="1.27640698511874" antecedent="328" consequent="366"/>
+  <AssociationRule support="0.0191148613742035" confidence="0.223790322580645" lift="2.0116879306901" antecedent="329" consequent="366"/>
+  <AssociationRule support="0.0220423626657482" confidence="0.216949152542373" lift="1.95019153067114" antecedent="330" consequent="366"/>
+  <AssociationRule support="0.029447218873773" confidence="0.201176470588235" lift="1.80840830449827" antecedent="331" consequent="366"/>
+  <AssociationRule support="0.00878250387463406" confidence="0.0965909090909091" lift="0.868271531100478" antecedent="332" consequent="366"/>
+  <AssociationRule support="0.0111933872912003" confidence="0.0906555090655509" lift="0.814917246352406" antecedent="333" consequent="366"/>
+  <AssociationRule support="0.0146375064577234" confidence="0.0902335456475584" lift="0.811124147949492" antecedent="334" consequent="366"/>
+  <AssociationRule support="0.0204925090408128" confidence="0.130482456140351" lift="1.17292820867959" antecedent="335" consequent="366"/>
+  <AssociationRule support="0.0246254520406406" confidence="0.129177958446251" lift="1.16120186485663" antecedent="336" consequent="366"/>
+  <AssociationRule support="0.0309970724987085" confidence="0.120562625586068" lift="1.08375722411501" antecedent="337" consequent="366"/>
+  <AssociationRule support="0.00671603237472017" confidence="0.110481586402266" lift="0.993137108727493" antecedent="338" consequent="366"/>
+  <AssociationRule support="0.00912691579128638" confidence="0.173202614379085" lift="1.55694672089682" antecedent="339" consequent="366"/>
+  <AssociationRule support="0.00654382641639401" confidence="0.091566265060241" lift="0.823104181431609" antecedent="340" consequent="366"/>
+  <AssociationRule support="0.0118822111245049" confidence="0.113486842105263" lift="1.02015184536418" antecedent="341" consequent="366"/>
+  <AssociationRule support="0.00688823833304632" confidence="0.130293159609121" lift="1.17122659109932" antecedent="342" consequent="366"/>
+  <AssociationRule support="0.0182538315825728" confidence="0.18694885361552" lift="1.680513920968" antecedent="343" consequent="366"/>
+  <AssociationRule support="0.019631479249182" confidence="0.180379746835443" lift="1.62146314221891" antecedent="344" consequent="366"/>
+  <AssociationRule support="0.0273807473738591" confidence="0.18213058419244" lift="1.63720170651006" antecedent="345" consequent="366"/>
+  <AssociationRule support="0.0177372137075943" confidence="0.0886402753872633" lift="0.79680198014526" antecedent="346" consequent="366"/>
+  <AssociationRule support="0.0215257447907698" confidence="0.0941265060240964" lift="0.846118607557164" antecedent="347" consequent="366"/>
+  <AssociationRule support="0.0242810401239883" confidence="0.0894102726696259" lift="0.80372361206272" antecedent="348" consequent="366"/>
+  <AssociationRule support="0.0053383847081109" confidence="0.0942249240121581" lift="0.847003303000932" antecedent="349" consequent="366"/>
+  <AssociationRule support="0.00430514895815395" confidence="0.0905797101449275" lift="0.814235877417329" antecedent="350" consequent="366"/>
+  <AssociationRule support="0.013087652832788" confidence="0.138939670932358" lift="1.24895150016131" antecedent="351" consequent="366"/>
+  <AssociationRule support="0.0132598587911142" confidence="0.122222222222222" lift="1.09867561059512" antecedent="352" consequent="366"/>
+  <AssociationRule support="0.0184260375408989" confidence="0.122146118721461" lift="1.0979915037392" antecedent="353" consequent="366"/>
+  <AssociationRule support="0.00723265024969864" confidence="0.117977528089888" lift="1.06051935854176" antecedent="354" consequent="366"/>
+  <AssociationRule support="0.0167039779576373" confidence="0.174774774774775" lift="1.57107912866427" antecedent="355" consequent="366"/>
+  <AssociationRule support="0.0280695712071638" confidence="0.169968717413973" lift="1.52787669043799" antecedent="356" consequent="366"/>
+  <AssociationRule support="0.0137764766660926" confidence="0.0829875518672199" lift="0.745988720886913" antecedent="357" consequent="366"/>
+  <AssociationRule support="0.0254864818322714" confidence="0.102351313969571" lift="0.920052755760526" antecedent="358" consequent="366"/>
+  <AssociationRule support="0.0139486826244188" confidence="0.136593591905565" lift="1.22786221082913" antecedent="359" consequent="366"/>
+  <AssociationRule support="0.0132598587911142" confidence="0.123003194888179" lift="1.10569590203662" antecedent="360" consequent="366"/>
+  <AssociationRule support="0.0211813328741174" confidence="0.129610115911486" lift="1.16508659922291" antecedent="361" consequent="366"/>
+  <AssociationRule support="0.0473566385396935" confidence="0.215686274509804" lift="1.93883931281491" antecedent="362" consequent="366"/>
+  <AssociationRule support="0.0578612019975891" confidence="0.205003050640635" lift="1.84280606048013" antecedent="363" consequent="366"/>
+  <AssociationRule support="0.0640606164973308" confidence="0.20327868852459" lift="1.82730548647414" antecedent="364" consequent="366"/>
+  <AssociationRule support="0.0597554675391769" confidence="0.110721123165284" lift="0.995290343995053" antecedent="365" consequent="366"/>
+ </AssociationModel>
+</PMML>

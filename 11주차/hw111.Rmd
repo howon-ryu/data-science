@@ -1,0 +1,170 @@
+---
+title: "hw111"
+output: html_document
+date: '2022-05-20'
+---
+
+```{r setup, include=FALSE}
+library(arules)
+library(arulesViz)
+library(shinythemes)
+library(pmml)
+library(rpart)
+
+```
+
+
+데이터 포함, 전처리
+전처리: 쓸모 없는 열 제거, 결측치 x, 대출일 기점으로 list화 
+
+
+```{r cars}
+book <- read.csv("book.csv", header = T)
+summary(book)
+head(book)
+book<-book[,-c(3,4,5,6)]
+book
+head(book)
+book <- na.omit(book)
+summary(book)
+book.list<-split(book$서명,book$대출일)
+#book.list
+#summary(book)
+```
+
+
+transaction 하기
+같은 대출일자를 기점으로 trans데이터 만들기
+
+```{r pressure, echo=FALSE}
+book.trans<-as(book.list,"transactions")
+#book.trans
+
+summary(book.trans)
+```
+
+
+
+
+
+```{r}
+frequentItems <- eclat (book.trans, 
+                        parameter = list(supp = 0.1, 
+                                         maxlen = 10)) 
+
+inspect(head(frequentItems, 5))
+```
+
+빈번한 책 확인
+
+```{r}
+itemFrequencyPlot(book.trans, 
+                  topN=10, 
+                  type="absolute", 
+                  main="Item Frequency") 
+```
+
+기본 rules 생성
+#매개변수	  의미	                        디폴트
+#support	  규칙의 최소 지지도(발생 비율)	  0.1
+#confidence	규칙의 최소 신뢰도	            0.8
+#minlen	    규칙에 포함되는 최소 물품 수	   1
+#maxlen	    규칙에 포함되는 최대 물품 수	   10
+#smax	      규칙의 최대 지지도	             1
+
+
+```{r}
+book.rules<-apriori(book.trans)
+
+summary(book.rules)
+inspect(book.rules)
+```
+
+신뢰도와 향상도 별로 살펴 보기
+
+
+```{r}
+rules_conf <- sort (book.rules, by="confidence", decreasing=TRUE) 
+# 'high-confidence' rules.
+
+inspect(head(rules_conf)) 
+# show the support, lift and confidence for all rules
+
+rules_lift <- sort (book.rules, by="lift", decreasing=TRUE) 
+# 'high-lift' rules.
+
+inspect(head(rules_lift))
+```
+
+
+supp와 conf 조절
+
+
+```{r}
+adj_rules <-
+  apriori(book.trans,
+          parameter = list (
+            supp = 0.05, # min sup 한번이상 대여에 나타남
+            conf = 0.6 # 규칙의 선행이 발생하였을때 결과가 발생하는 비율 , 신뢰도
+            # 즉 lsh의 책을 대출 받는 사람은 conf의 확률의%로 rhs의 책도 대출 받음을 의미함 
+          )) 
+
+inspect(head(adj_rules, length(adj_rules), by = "confidence"))
+summary(adj_rules)
+```
+
+데미안을 예측하기 위한 rules생성
+
+
+```{r}
+rules <- apriori (data=book.trans, 
+                  parameter=list (supp=0.1,
+                                  conf = 0.9
+                                  ), 
+                  appearance = list (default="lhs",
+                                     rhs="데미안"), 
+                  control = list (verbose=F)) 
+```
+
+신뢰도 정렬
+
+
+```{r}
+rules_conf <- sort (rules, by="confidence", decreasing=TRUE) 
+inspect(head(rules_conf))
+```
+
+향상도 정렬
+
+
+```{r}
+rules_conf <- sort (rules, by="lift", decreasing=TRUE)
+inspect(head(rules_conf),15)
+
+```
+
+
+ 
+
+
+
+lift 정렬 순서와 confidence로 정렬한 순서가 같음
+
+책의 종류가 워낙 많아서 정확히 같은 책을 대여하는 경우가 많지 않아서 rules 가 많이 적음
+
+supp를 0.2로 올리기만 해도 rules는 2개로 줄어듬
+
+
+처음 conf가 가장 높으며 대출이 가장 높은 데미안 으로 예측을 해 보았을때,
+
+
+
+
+
+
+
+
+
+
+
+
